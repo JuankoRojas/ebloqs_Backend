@@ -1,12 +1,15 @@
+import { connectionDB } from './database/database';
 import express, { Application } from 'express'
 import cors from "cors";
 import fileUpload from 'express';
 import path from 'path'
 import morgan from 'morgan';
 
+
 // ROUTES
 import indexRout from './routes/index.routes'
-import { connectionDB } from './database/database';
+import userRout from './routes/usuarios.routes'
+
 
 const app: Application = express();
 const PORT = 5000
@@ -21,6 +24,7 @@ app.use(morgan('dev'));
 
 // Routes
 app.use(indexRout);
+app.use(userRout);
 
 
 app.listen(PORT, () => {

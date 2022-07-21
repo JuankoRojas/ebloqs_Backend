@@ -8,10 +8,10 @@ export function setUserModel(data?: any) {
                   "email": data?.email,
                   "nombre": data?.nombre || "",
                   "apellido": data?.apellido || "",
-                  "nacionalidad": data?.phone || "",
+                  "nacionalidad": data?.nacionalidad || "",
                   "fecha_nacimiento": data?.fecha_nacimiento || "",
                   "identificacion": data?.identificacion || "",
-                  "ciudad": data?.sector || "",
+                  "ciudad": data?.ciudad || "",
                   "postal": data?.postal || "",
                   "direccion": data?.direccion || ""
 
