@@ -7,6 +7,7 @@ import { connect } from '../database/database';
 import { errorValidation, verifyEmail, verifyID } from '../libs/functions';
 import { setUserModel } from '../models/usuario';
 import { returnOK } from '../models/returnmodels';
+import { getImgURL } from '../libs/validateImages';
 
 
 
@@ -55,9 +56,8 @@ export async function updateUser(req: Request, res: Response): Promise<Response 
                 console.log(userData.user)
                 const query = await conn.query('UPDATE `usuarios` SET `nombre` = ?, `apellido` = ?, `postal` = ?, `ciudad` = ?, `direccion` = ?  WHERE `usuarios`.`uid` = ?',
                     [userData.user.nombre, userData.user.apellido, userData.user.postal, userData.user.ciudad, userData.user.direccion, userData.user.uid])
-
                 const queryUpdated = await conn.query('SELECT * FROM `usuarios` WHERE uid = ?', [userData.user.uid])
-                userData = setUserModel(queryUpdated[0][0]) 
+                userData = setUserModel(queryUpdated[0][0])
                 userData.message = "Usuario actualizado correctamente.";
                 returnOK(res, userData);
             }
@@ -95,4 +95,17 @@ export async function disableUserAccount(req: Request, res: Response): Promise<R
     } catch (e: any) {
         errorValidation(e, res)
     }
+}
+
+export async function uploadDocument(req: Request, res: Response): Promise<Response | void> {
+    try {
+        const paths: any = req.files;
+        const uid = req.body.uid;
+        let arrayImages: any = await getImgURL(paths);
+        res.json({ "Ok": true   })
+    } catch (e: any) {
+        errorValidation(e, res)
+    }
+
+    // imgURL: arrayImages["image"]||arrayImages["imgURL"]||arrayImages["img"]||arrayImages["imgProfile"]
 }
