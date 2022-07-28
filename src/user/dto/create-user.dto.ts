@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 export class CreateUserDto {
-    @IsString()
-    @IsOptional()
-    @ApiProperty({ description: 'This is optional' })
-    readonly name: string;
-
-    @IsString()
+    @IsEmail()
+    @ApiProperty({ type: String, format: 'email', required: true })
     readonly email: string;
 
     @IsString()
+    @ApiProperty()
     readonly deviceID: string;
 }

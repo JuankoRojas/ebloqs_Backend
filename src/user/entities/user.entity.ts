@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import {
     Column,
     CreateDateColumn,
@@ -21,19 +20,16 @@ export class User {
     @Column({ type: 'varchar', length: 255 })
     deviceID: string;
 
-    @Exclude()
     @Column()
-    password: string;
+    photoURL: string;
 
     @CreateDateColumn({
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
+        type: 'timestamp',
     })
-    createAt: Date;
+    create: Date;
 
     @UpdateDateColumn({
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
+        type: 'timestamp',
     })
-    updateAt: Date;
+    update: Date;
 }
