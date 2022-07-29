@@ -24,7 +24,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             }
             return user;
         } catch (e) {
-            console.log(e);
             throw new HttpException(e.message, e.status);
         }
     }
