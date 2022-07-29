@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                     return {
                         type: 'mysql',
                         database: configService.mysql.dbName,
-                        port: configService.mysql.port,
+                        // port: configService.mysql.port,
                         password: configService.mysql.password,
                         user: configService.mysql.user,
                         host: configService.mysql.host,
