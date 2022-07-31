@@ -11,39 +11,36 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
-    async validateUser(email: string, deviceID: string): Promise<any> {
+    async validateUser(email: string, deviceID: string): Promise<User> {
         const user = await this.usersService.findByEmail(email);
         if (user) {
+            console.log(deviceID);
+            console.log(user);
             const isMatch = user.deviceID.indexOf(deviceID);
-            console.log(isMatch);
             if (isMatch != -1) {
                 return user;
             } else {
-                throw new UnauthorizedException('Dispositivo no registrado');
+                throw new UnauthorizedException('Device unauthorized');
             }
         } else {
-            throw new UnauthorizedException(
-                'No se encontró un usuario con este email',
-            );
+            throw new UnauthorizedException('User not found');
         }
     }
 
     async login(user: any) {
         const validUser = await this.validateUser(user.email, user.deviceID);
-        console.log(validUser.id);
-        // const payload = { username: user.role, sub: user.id };
-        // return {
-        //     access_token: this.jwtService.sign(payload),
-        // };
+        const payload = { userid: validUser.id, deviceID: validUser.deviceID };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 
     async registerUser(userData: CreateUserDto) {
         try {
             const userRegister = await this.usersService.create(userData);
-            console.log(userRegister);
             const payload = {
-                deviceID: userRegister.deviceID[0],
-                role: 'consumer',
+                userid: userRegister.id,
+                deviceID: userRegister.deviceID,
             };
             return {
                 access_token: this.jwtService.sign(payload),
