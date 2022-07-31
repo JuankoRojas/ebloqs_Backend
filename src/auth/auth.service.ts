@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,13 @@ export class AuthService {
     async validateUser(email: string, deviceID: string): Promise<any> {
         const user = await this.usersService.findByEmail(email);
         if (user) {
-            return user;
+            const isMatch = user.deviceID.indexOf(deviceID);
+            console.log(isMatch);
+            if (isMatch != -1) {
+                return user;
+            } else {
+                throw new UnauthorizedException('Dispositivo no registrado');
+            }
         } else {
             throw new UnauthorizedException(
                 'No se encontró un usuario con este email',
@@ -22,10 +29,12 @@ export class AuthService {
     }
 
     async login(user: any) {
-        const payload = { username: user.role, sub: user.id };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+        const validUser = await this.validateUser(user.email, user.deviceID);
+        console.log(validUser.id);
+        // const payload = { username: user.role, sub: user.id };
+        // return {
+        //     access_token: this.jwtService.sign(payload),
+        // };
     }
 
     async registerUser(userData: CreateUserDto) {
@@ -33,7 +42,7 @@ export class AuthService {
             const userRegister = await this.usersService.create(userData);
             console.log(userRegister);
             const payload = {
-                deviceID: userRegister.deviceID,
+                deviceID: userRegister.deviceID[0],
                 role: 'consumer',
             };
             return {

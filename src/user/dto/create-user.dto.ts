@@ -9,4 +9,8 @@ export class CreateUserDto {
     @IsString()
     @ApiProperty()
     readonly deviceID: string;
+
+    @IsString()
+    @ApiProperty()
+    readonly type_acount: string;
 }

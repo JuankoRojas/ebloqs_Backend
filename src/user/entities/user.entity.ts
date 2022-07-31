@@ -11,25 +11,27 @@ export class User {
     @PrimaryColumn()
     id: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', nullable: true })
     name: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', nullable: true })
     email: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    deviceID: string;
+    @Column({ array: false, type: 'varchar', nullable: true })
+    deviceID: string[];
 
-    @Column()
-    photoURL: string;
+    @Column({ type: 'varchar', nullable: true })
+    type_acount: string;
 
     @CreateDateColumn({
         type: 'timestamp',
+        nullable: true,
     })
     create: Date;
 
     @UpdateDateColumn({
         type: 'timestamp',
+        nullable: true,
     })
     update: Date;
 }

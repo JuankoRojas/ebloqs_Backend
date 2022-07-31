@@ -13,15 +13,24 @@ export class UserService {
         @InjectRepository(User, 'mysqlDB') private userRepo: Repository<User>,
     ) {}
     create(createUserDto: CreateUserDto) {
-        const newUser = this.userRepo.create(createUserDto);
+        let user = new User();
+        user = {
+            id: '',
+            email: createUserDto.email,
+            deviceID: [createUserDto.deviceID],
+            name: '',
+            type_acount: createUserDto.type_acount,
+            create: new Date(),
+            update: new Date(),
+        };
+        const newUser = this.userRepo.create(user);
         newUser.id = uuidv4();
         newUser.name = 'Your name';
-        newUser.photoURL = 'https://via.placeholder.com/150';
         return this.userRepo.save(newUser);
     }
 
     findByEmail(email: string) {
-        return `This action returns all user ${email}`;
+        return this.userRepo.findOne({ where: { email } });
     }
 
     findOne(id: number) {
