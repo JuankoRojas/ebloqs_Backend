@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { ValidateUserDto } from '../dto/validate.dto';
 import { UserService } from '../user.service';
 
 @ApiTags('user')
@@ -22,14 +23,14 @@ export class UserController {
         return this.userService.create(createUserDto);
     }
 
-    @Get()
-    findAll() {
-        return this.userService.findByEmail('');
+    @Post('validate')
+    findAll(@Body() code: ValidateUserDto) {
+        return this.userService.validateEmailUser(code.code);
     }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.userService.findOne(+id);
+        return this.userService.findOne('');
     }
 
     @Patch(':id')

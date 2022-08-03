@@ -7,6 +7,7 @@ import config from './config';
 import { DatabaseModule } from './database/database.module';
 import { environment } from './enviroment';
 import { UserModule } from './user/user.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
         DatabaseModule,
         AuthModule,
         UserModule,
+        MailerModule,
     ],
     controllers: [AppController],
     providers: [AppService],

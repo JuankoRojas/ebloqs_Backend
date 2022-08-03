@@ -5,9 +5,9 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const config = new DocumentBuilder()
-        .setTitle('EBLOOQS-API')
+        .setTitle('EBLOQS-API')
         .setDescription(
-            'Todos los servicios de la API de EBLOOQS, para el desarrollo de aplicaciones.',
+            'Todos los servicios de la API de EBLOQS, para el desarrollo de aplicaciones.',
         )
         .setVersion('1.0')
         .build();

@@ -23,6 +23,9 @@ export class User {
     @Column({ type: 'varchar', nullable: true })
     type_acount: string;
 
+    @Column({ type: 'bool', nullable: true })
+    email_verificated: boolean;
+
     @CreateDateColumn({
         type: 'timestamp',
         nullable: true,
