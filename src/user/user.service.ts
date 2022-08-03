@@ -63,7 +63,9 @@ export class UserService {
         } else {
             vuser.email_verificated = true;
             await this.userRepo.save(vuser);
-            return `Correo ${vuser.email} verificado`
+            return {
+                message: `Correo ${vuser.email} verificado`
+            }
         }
     }
 }
