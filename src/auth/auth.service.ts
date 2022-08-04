@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { User } from 'src/user/entities/user.entity';
 import { AuthAppleLoginDto } from './dtos/apple.dto';
+import AppleAuth, { AppleAuthConfig }  from "apple-auth";
 
 import appleSigninAuth from 'apple-signin-auth';
 import { Request } from 'express';
@@ -13,8 +14,9 @@ export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
-    ) {}
-
+        ) {}
+        
+        
     async validateUser(email: string, deviceID: string): Promise<User> {
         const user = await this.usersService.findByEmail(email);
         if (user) {
@@ -55,10 +57,10 @@ export class AuthService {
     }
 
     async getProfileByToken(
-        loginDto: AuthAppleLoginDto,
+        loginDto: string,
       ): Promise<any> {
         try {
-            const data = await appleSigninAuth.verifyIdToken(loginDto.authorizationCode, {
+            const data = await appleSigninAuth.verifyIdToken(loginDto, {
               audience: process.env.BUNDLE_ID,
             });
         
@@ -88,7 +90,36 @@ export class AuthService {
           } catch (error) {
             console.log(`Callback error: ${error}`);
             throw new Error(error);
-            
+          }
+    }
+
+    async signinApple (request: Request) {
+        try {
+            const configAuth = <AppleAuthConfig>{
+                client_id:
+                request.query.useBundleId === "true"
+                  ? process.env.BUNDLE_ID
+                  : process.env.SERVICE_ID,
+              team_id: process.env.TEAM_ID,
+              redirect_uri:
+                "https://apple-google-signin-serv.herokuapp.com/callbacks/sign_in_with_apple", // does not matter here, as this is already the callback that verifies the token after the redirection
+              key_id: process.env.KEY_ID,
+            };
+
+            const auth = new AppleAuth(
+                configAuth,
+                process.env.KEY_CONTENTS,
+                "text"
+            );
+        
+            console.log(request.query);
+        
+            const accessToken = await auth.accessToken(request.query.code.toString());
+        
+        
+            return this.getProfileByToken(accessToken.id_token)
+          } catch (error) {
+            console.log(`signInWithApple error: ${error}`);
           }
     }
 }

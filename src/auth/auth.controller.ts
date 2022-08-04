@@ -23,19 +23,14 @@ export class AuthController {
     async register(@Body() payload: CreateUserDto) {
         return this.authService.registerUser(payload);
     }
- 
-    @Post('/apple')
-    async loginwithApple(@Body() payload: AuthAppleLoginDto) {
-        return this.authService.getProfileByToken(payload);
-    } 
-
+    
     @Post('/callback')
     async loginwithAppleinAdroid(@Req() payload: Request) {
         return this.authService.signinwithApple(payload.body);
     }
-
-    // @Post('/social')
-    // async loginSocial(@Body() payload: CreateUserDto) {
-    //     return this.authService.loginSocial(payload);
-    // }
+    
+    @Post('/callback/signinWithApple')
+    async loginwithApple(@Body() payload: Request) {
+        return this.authService.signinApple(payload);
+    }
 }
