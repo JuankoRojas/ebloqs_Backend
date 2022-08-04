@@ -103,7 +103,7 @@ export class AuthService {
                   : process.env.SERVICE_ID,
               team_id: process.env.TEAM_ID,
               redirect_uri:
-                "https://apple-google-signin-serv.herokuapp.com/callbacks/sign_in_with_apple", // does not matter here, as this is already the callback that verifies the token after the redirection
+                "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", // does not matter here, as this is already the callback that verifies the token after the redirection
               key_id: process.env.KEY_ID,
             };
 
@@ -113,9 +113,7 @@ export class AuthService {
                 "text"
             );
         
-        
             const accessToken = await auth.accessToken(request.query.code.toString());
-        
         
             return this.getProfileByToken(accessToken.id_token)
           } catch (error) {
