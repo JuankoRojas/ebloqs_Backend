@@ -61,7 +61,10 @@ export class AuthService {
       ): Promise<any> {
         try {
             const data = await appleSigninAuth.verifyIdToken(loginDto, {
-              audience: process.env.BUNDLE_ID,
+              audience: [
+                process.env.BUNDLE_ID,
+                process.env.SERVICE_ID
+            ],
             });
         
             return {
@@ -70,6 +73,7 @@ export class AuthService {
             };
             
         } catch (error) {
+            console.log(`Callback error: ${error}`);
             throw new HttpException(error, 500)
         }
       }
