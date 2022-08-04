@@ -24,11 +24,11 @@ export class AuthController {
     
     @Post('/callback')
     async loginwithAppleinAdroid(@Req() payload: Request, @Res() res: Response) {
-        return this.authService.signinwithApple(payload.body, res);
+        return this.authService.callbackApple(payload.body, res);
     }
     
-    @Post('/callback/signinWithApple')
-    async loginwithApple(@Body() payload: Request) {
-        return this.authService.signinApple(payload);
+    @Post('/signinWithApple')
+    async loginwithApple(@Body() request: Request) {
+        return this.authService.signinApple(request);
     }
 }

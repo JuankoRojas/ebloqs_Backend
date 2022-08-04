@@ -61,10 +61,10 @@ export class AuthService {
       ): Promise<any> {
         try {
             const data = await appleSigninAuth.verifyIdToken(loginDto, {
-              audience: [
-                process.env.BUNDLE_ID,
-                process.env.SERVICE_ID
-            ],
+                audience: [
+                    process.env.BUNDLE_ID,
+                    process.env.SERVICE_ID
+                ],
             });
         
             return {
@@ -78,7 +78,7 @@ export class AuthService {
         }
       }
 
-    async signinwithApple (request: Request, res: Response) {
+    async callbackApple (request: Request, res: Response) {
         try {
             const redirect = `intent://callback?${new URLSearchParams(
               request.body
