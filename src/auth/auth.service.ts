@@ -1,8 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { User } from 'src/user/entities/user.entity';
+import { AuthAppleLoginDto } from './dtos/apple.dto';
+
+import appleSigninAuth from 'apple-signin-auth';
 
 @Injectable()
 export class AuthService {
@@ -50,26 +53,23 @@ export class AuthService {
         }
     }
 
-    // async loginSocial(userData: CreateUserDto) {
-    //     return this.usersService
-    //         .findOne(userData.id)
-    //         .then((user) => {
-    //             if (user) {
-    //                 const payload = { username: user.role, sub: user.id };
-    //                 return {
-    //                     access_token: this.jwtService.sign(payload),
-    //                 };
-    //             } else {
-    //                 return this.registerUserSocial(userData);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             if (err.status === 404) {
-    //                 return this.registerUserSocial(userData);
-    //             }
-    //             console.log('coltala', err.status);
-    //         });
-    // }
+    async getProfileByToken(
+        loginDto: AuthAppleLoginDto,
+      ): Promise<any> {
+        try {
+            const data = await appleSigninAuth.verifyIdToken(loginDto.authorizationCode, {
+              audience: process.env.BUNDLE_ID,
+            });
+        
+            return {
+              id: data.sub,
+              email: data.email,
+            };
+            
+        } catch (error) {
+            throw new HttpException(error, 500)
+        }
+      }
 
     // async registerUserSocial(userData: CreateUserDto) {
     //     const userRegister = await this.usersService.createOfSocial(userData);
