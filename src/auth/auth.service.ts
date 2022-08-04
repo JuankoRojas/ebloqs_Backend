@@ -93,26 +93,26 @@ export class AuthService {
     async signinApple (request: Request) {
         try {
             console.log(request['id_token']);
-            const configAuth = <AppleAuthConfig>{
-                client_id:
-                request.query.useBundleId === "true"
-                  ? process.env.BUNDLE_ID
-                  : process.env.SERVICE_ID,
-              team_id: process.env.TEAM_ID,
-              redirect_uri:
-                "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", // does not matter here, as this is already the callback that verifies the token after the redirection
-              key_id: process.env.KEY_ID,
-            };
+            // const configAuth = <AppleAuthConfig>{
+            //     client_id:
+            //     request.query.useBundleId === "true"
+            //       ? process.env.BUNDLE_ID
+            //       : process.env.SERVICE_ID,
+            //   team_id: process.env.TEAM_ID,
+            //   redirect_uri:
+            //     "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", // does not matter here, as this is already the callback that verifies the token after the redirection
+            //   key_id: process.env.KEY_ID,
+            // };
 
-            const auth = new AppleAuth(
-                configAuth,
-                process.env.KEY_CONTENTS,
-                "text"
-            );
+            // const auth = new AppleAuth(
+            //     configAuth,
+            //     process.env.KEY_CONTENTS,
+            //     "text"
+            // );
         
-            const accessToken = await auth.accessToken(request.query.code.toString());
+            // const accessToken = await auth.accessToken(request.query.code.toString());
         
-            return this.getProfileByToken(accessToken.id_token)
+            return this.getProfileByToken(request['id_token'])
           } catch (error) {
             console.log(`signInWithApple error: ${error}`);
             throw new HttpException(error, 500);
