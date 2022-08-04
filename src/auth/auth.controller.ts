@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -22,11 +22,16 @@ export class AuthController {
     @Post('/register')
     async register(@Body() payload: CreateUserDto) {
         return this.authService.registerUser(payload);
-    }  
+    }
  
     @Post('/apple')
     async loginwithApple(@Body() payload: AuthAppleLoginDto) {
-        return payload;
+        return this.authService.getProfileByToken(payload);
+    } 
+
+    @Post('/callback')
+    async loginwithAppleinAdroid(@Req() payload: Request) {
+        return this.authService.signinwithApple(payload);
     }
 
     // @Post('/social')

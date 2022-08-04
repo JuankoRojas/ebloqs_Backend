@@ -6,6 +6,7 @@ import { User } from 'src/user/entities/user.entity';
 import { AuthAppleLoginDto } from './dtos/apple.dto';
 
 import appleSigninAuth from 'apple-signin-auth';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -71,12 +72,23 @@ export class AuthService {
         }
       }
 
-    // async registerUserSocial(userData: CreateUserDto) {
-    //     const userRegister = await this.usersService.createOfSocial(userData);
-    //     const payload = { username: userRegister.role, sub: userRegister.id };
-
-    //     return {
-    //         access_token: this.jwtService.sign(payload),
-    //     };
-    // }
+    async signinwithApple (request: Request,) {
+        try {
+            const redirect = `intent://callback?${new URLSearchParams(
+              request.body
+            ).toString()}#Intent;package=${process.env.ANDROID_PACKAGE_IDENTIFIER
+              };scheme=signinwithapple;end`;
+        
+            console.log(`Redirecting to ${redirect}`);
+        
+            return {
+                status: 307,
+                redirect
+            }
+          } catch (error) {
+            console.log(`Callback error: ${error}`);
+            throw new Error(error);
+            
+          }
+    }
 }
