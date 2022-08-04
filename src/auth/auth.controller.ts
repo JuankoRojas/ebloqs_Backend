@@ -1,11 +1,9 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-// import { LocalAuthGuard } from './local-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthAppleLoginDto } from './dtos/apple.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,8 +23,8 @@ export class AuthController {
     }
     
     @Post('/callback')
-    async loginwithAppleinAdroid(@Req() payload: Request) {
-        return this.authService.signinwithApple(payload.body);
+    async loginwithAppleinAdroid(@Req() payload: Request, @Res() res: Response) {
+        return this.authService.signinwithApple(payload.body, res);
     }
     
     @Post('/callback/signinWithApple')

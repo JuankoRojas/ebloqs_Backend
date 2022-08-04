@@ -7,7 +7,7 @@ import { AuthAppleLoginDto } from './dtos/apple.dto';
 import AppleAuth, { AppleAuthConfig }  from "apple-auth";
 
 import appleSigninAuth from 'apple-signin-auth';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -74,7 +74,7 @@ export class AuthService {
         }
       }
 
-    async signinwithApple (request: Request,) {
+    async signinwithApple (request: Request, res: Response) {
         try {
             const redirect = `intent://callback?${new URLSearchParams(
               request.body
@@ -83,10 +83,7 @@ export class AuthService {
         
             console.log(`Redirecting to ${redirect}`);
         
-            return {
-                status: 307,
-                redirect
-            }
+            return res.redirect(307, redirect)
           } catch (error) {
             console.log(`Callback error: ${error}`);
             throw new Error(error);
@@ -95,7 +92,7 @@ export class AuthService {
 
     async signinApple (request: Request) {
         try {
-            console.log(request);
+            console.log(request['id_token']);
             const configAuth = <AppleAuthConfig>{
                 client_id:
                 request.query.useBundleId === "true"
