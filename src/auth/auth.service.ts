@@ -58,6 +58,7 @@ export class AuthService {
 
     async getProfileByToken(
         loginDto: string,
+        res: Response
       ): Promise<any> {
         try {
             const data = await appleSigninAuth.verifyIdToken(loginDto, {
@@ -67,10 +68,7 @@ export class AuthService {
                 ],
             });
         
-            return {
-              id: data.sub,
-              email: data.email,
-            };
+            return res.redirect(307, 'ebloqsurl://ebloqs-validate.netlify.app');
             
         } catch (error) {
             console.log(`Callback error: ${error}`);
@@ -94,7 +92,7 @@ export class AuthService {
           }
     }
 
-    async signinApple (request: Request) {
+    async signinApple (request: Request, res: Response) {
         try {
             console.log(request['id_token']);
             // const configAuth = <AppleAuthConfig>{
@@ -116,7 +114,7 @@ export class AuthService {
         
             // const accessToken = await auth.accessToken(request.query.code.toString());
         
-            return this.getProfileByToken(request['id_token'])
+            return this.getProfileByToken(request['id_token'], res)
           } catch (error) {
             console.log(`signInWithApple error: ${error}`);
             throw new HttpException(error, 500);

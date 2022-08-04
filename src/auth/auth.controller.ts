@@ -27,8 +27,8 @@ export class AuthController {
         return this.authService.callbackApple(payload.body, res);
     }
     
-    @Post('/signinWithApple')
-    async loginwithApple(@Body() request: Request) {
-        return this.authService.signinApple(request);
+    @Post('/callback/signinWithApple')
+    async loginwithApple(@Body() request: Request, @Res() res:Response) {
+        return this.authService.signinApple(request, res);
     }
 }
