@@ -95,6 +95,7 @@ export class AuthService {
 
     async signinApple (request: Request) {
         try {
+            console.log(request.query);
             const configAuth = <AppleAuthConfig>{
                 client_id:
                 request.query.useBundleId === "true"
@@ -112,7 +113,6 @@ export class AuthService {
                 "text"
             );
         
-            console.log(request.query);
         
             const accessToken = await auth.accessToken(request.query.code.toString());
         
@@ -120,6 +120,7 @@ export class AuthService {
             return this.getProfileByToken(accessToken.id_token)
           } catch (error) {
             console.log(`signInWithApple error: ${error}`);
+            throw new Error(error);
           }
     }
 }
