@@ -68,7 +68,7 @@ export class AuthService {
                 ],
             });
         
-            return res.redirect(307, 'ebloqsurl://ebloqs-validate.netlify.app');
+            return res.json({data});
             
         } catch (error) {
             console.log(`Callback error: ${error}`);
