@@ -31,7 +31,7 @@ export class AuthController {
 
     @Post('/callback')
     async loginwithAppleinAdroid(@Req() payload: Request) {
-        return this.authService.signinwithApple(payload);
+        return this.authService.signinwithApple(payload.body);
     }
 
     // @Post('/social')
