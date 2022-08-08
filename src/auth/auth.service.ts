@@ -8,6 +8,7 @@ import AppleAuth, { AppleAuthConfig }  from "apple-auth";
 
 import appleSigninAuth from 'apple-signin-auth';
 import { Request, Response } from 'express';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Injectable()
 export class AuthService {
@@ -56,6 +57,8 @@ export class AuthService {
         }
     }
 
+    // APPLE SIGNIN
+
     async getProfileByToken(
         loginDto: string,
         res: Response
@@ -94,12 +97,10 @@ export class AuthService {
 
     async signinApple (request: Request, res: Response) {
         try {
-            console.log(request['id_token']);
-            const configAuth = <AppleAuthConfig>{
-                client_id: 'com.ebloqs.signinservice',
+            const configAuth = <AppleAuthConfig> {
+              client_id: 'com.ebloqs.signinservice',
               team_id: process.env.TEAM_ID,
-              redirect_uri:
-                "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", // does not matter here, as this is already the callback that verifies the token after the redirection
+              redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", 
               key_id: process.env.KEY_ID,
             };
 
@@ -111,7 +112,7 @@ export class AuthService {
         
             const accessToken = await auth.accessToken(request['code'].toString());
         
-            return this.getProfileByToken(accessToken.id_token, res)
+            return this.getProfileByToken(accessToken.id_token, res);
           } catch (error) {
             console.log(`signInWithApple error: ${error}`);
             throw new HttpException(error, 500);

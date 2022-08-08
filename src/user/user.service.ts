@@ -6,13 +6,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 import { v4 as uuidv4 } from 'uuid';
+import { EmailsService } from 'src/emails/emails.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User, 'mysqlDB') private userRepo: Repository<User>,
+        private emailService: EmailsService,
     ) {}
-    create(createUserDto: CreateUserDto) {
+    async create(createUserDto: CreateUserDto) {
         try {
             let user = new User();
             user = {
@@ -30,6 +32,7 @@ export class UserService {
             newUser.name = 'Your name';
             const linkCode = this.generatelinkvalidate(newUser.id)
             console.log(linkCode);
+            await this.emailService.sendVerificationEmails(newUser.email);
             return this.userRepo.save(newUser);
         } catch(e){
             throw new HttpException(e, 500)
