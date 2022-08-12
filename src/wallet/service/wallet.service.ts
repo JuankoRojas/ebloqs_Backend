@@ -34,6 +34,7 @@ export class WalletService {
                 id_wallet: savedwallet.id,
                 mnemonic: mnemonicS['data']['mnemonic'],
             };
+            
         } catch (error) {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }

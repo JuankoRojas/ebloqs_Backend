@@ -34,9 +34,9 @@ export class UserController {
         return this.userService.recoveryUser(code);
     }
 
-    @Get(':id')
+    @Get('all')
     findOne(@Param('id') id: string) {
-        return this.userService.findOne('');
+        return this.userService.getAllUsers();
     }
 
     @Patch(':id')

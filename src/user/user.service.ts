@@ -93,4 +93,9 @@ export class UserService {
         }
 
     }
+
+
+    async getAllUsers() {
+        return this.userRepo.findBy({})
+    }
 }
