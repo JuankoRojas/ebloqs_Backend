@@ -6,7 +6,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 import { EmailsService } from 'src/emails/emails.service';
+import { RecoveryUserDto } from './dto/recovery.dto';
 
 @Injectable()
 export class UserService {
@@ -22,6 +24,7 @@ export class UserService {
                 email: createUserDto.email,
                 deviceID: [createUserDto.deviceID],
                 name: '',
+                password: '',
                 type_acount: createUserDto.type_acount,
                 email_verificated: false,
                 create: new Date(),
@@ -30,11 +33,11 @@ export class UserService {
             const newUser = this.userRepo.create(user);
             newUser.id = uuidv4();
             newUser.name = 'Your name';
-            const linkCode = this.generatelinkvalidate(newUser.id)
+            const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            await this.emailService.sendVerificationEmails(newUser.email);
+            // await this.emailService.sendVerificationEmails(newUser.email);
             return this.userRepo.save(newUser);
-        } catch(e){
+        } catch(e) {
             throw new HttpException(e, 500)
         }
     }
@@ -49,6 +52,11 @@ export class UserService {
 
     update(id: number, updateUserDto: UpdateUserDto) {
         return `This action updates a #${id} user ${updateUserDto}`;
+    }
+
+    updateUserData(user: User) {
+        const newUser = this.userRepo.create(user);
+        return this.userRepo.save(newUser);
     }
 
     remove(id: number) {
@@ -70,5 +78,19 @@ export class UserService {
                 message: `Correo ${vuser.email} verificado`
             }
         }
+    }
+
+    async recoveryUser(user: RecoveryUserDto) {
+        const findUser = await this.findByEmail(user.email);
+        if(user) {
+            findUser.password =  await bcrypt.hash(user.password, 10);
+            await this.userRepo.save(findUser);
+            return {
+                message: 'password changed'
+            }
+        } else {
+            throw new HttpException('user not found', 302);
+        }
+
     }
 }

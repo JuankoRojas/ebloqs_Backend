@@ -11,6 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         @Inject(config.KEY)
         private readonly configService: ConfigType<typeof config>,
     ) {
+        console.log(ExtractJwt.fromAuthHeaderAsBearerToken())
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -19,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: any) {
-        console.log(`${payload.sub} has been successfully authenticated.`);
-        return { userId: payload.sub, username: payload.username };
+        console.log(`${payload['userid']} has been successfully authenticated.`);
+        return { userId: payload['userid'], username: payload.username };
     }
 }

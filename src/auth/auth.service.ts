@@ -1,22 +1,47 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
-import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/entities/user.entity';
-import { AuthAppleLoginDto } from './dtos/apple.dto';
 import AppleAuth, { AppleAuthConfig }  from "apple-auth";
-
 import appleSigninAuth from 'apple-signin-auth';
 import { Request, Response } from 'express';
-import { EmailsService } from 'src/emails/emails.service';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+
+
+import { UserService } from 'src/user/user.service';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
+
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
-        ) {}
-        
+    ) {}
+    
+    async validatePasswordUser(email: string, password: string) {
+        const user = await this.usersService.findByEmail(email);
+        if (user) {
+
+            try {
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (isMatch) {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { password, ...result } = user;
+                    // console.log(result);
+                    return result;
+                } else {
+                    throw new UnauthorizedException('invalid pass');
+                }
+            } catch (error) {
+                throw new HttpException('pass not found', 301)
+            }
+        } else {
+            throw new HttpException('User not found', 302);
+        }
+    }
+
+
+    
         
     async validateUser(email: string, deviceID: string): Promise<User> {
         const user = await this.usersService.findByEmail(email);

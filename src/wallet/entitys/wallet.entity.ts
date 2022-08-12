@@ -7,27 +7,15 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class Wallet {
     @PrimaryColumn()
     id: string;
 
-    @Column({ type: 'varchar', nullable: true })
-    name: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    email: string;
-
-    @Column({ array: false, type: 'varchar', nullable: true })
-    deviceID: string[];
-
-    @Column({ type: 'varchar', nullable: true })
-    type_acount: string;
+    @Column({ type: 'varchar', nullable: false })
+    ownerId: string;
 
     @Column({ type: 'varchar', nullable: true })
     password: string;
-
-    @Column({ type: 'bool', nullable: true })
-    email_verificated: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',

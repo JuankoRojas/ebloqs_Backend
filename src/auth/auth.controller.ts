@@ -16,6 +16,13 @@ export class AuthController {
         return this.authService.login(payload.user);
     }
 
+    @UseGuards(AuthGuard('admin'))
+    @Post('/admin')
+    async loginadmin(@Req() payload: Request) {
+        console.log('hioasdna')
+        return this.authService.login(payload.user);
+    }
+
     // @UseGuards(LocalAuthGuard)
     @Post('/register')
     async register(@Body() payload: CreateUserDto) {

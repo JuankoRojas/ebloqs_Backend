@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { environment } from './enviroment';
 import { UserModule } from './user/user.module';
 import { EmailsModule } from './emails/emails.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { EmailsModule } from './emails/emails.module';
         AuthModule,
         UserModule,
         EmailsModule,
+        WalletModule,
     ],
     controllers: [AppController],
     providers: [AppService],

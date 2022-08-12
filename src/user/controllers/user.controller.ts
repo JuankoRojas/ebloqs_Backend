@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { RecoveryUserDto } from '../dto/recovery.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ValidateUserDto } from '../dto/validate.dto';
 import { UserService } from '../user.service';
@@ -26,6 +27,11 @@ export class UserController {
     @Post('validate')
     findAll(@Body() code: ValidateUserDto) {
         return this.userService.validateEmailUser(code.code);
+    }
+
+    @Post('recovery')
+    recoveryUser(@Body() code: RecoveryUserDto) {
+        return this.userService.recoveryUser(code);
     }
 
     @Get(':id')
