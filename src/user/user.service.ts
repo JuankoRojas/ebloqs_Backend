@@ -23,7 +23,8 @@ export class UserService {
                 id: '',
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
-                name: '',
+                name: createUserDto.name.toLowerCase(),
+                lastname: '',
                 password: '',
                 type_acount: createUserDto.type_acount,
                 email_verificated: false,
@@ -32,7 +33,6 @@ export class UserService {
             };
             const newUser = this.userRepo.create(user);
             newUser.id = uuidv4();
-            newUser.name = 'Your name';
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
             // await this.emailService.sendVerificationEmails(newUser.email);
@@ -96,7 +96,36 @@ export class UserService {
 
 
     async getAllUsers() {
-        return this.userRepo.clear()
+        var listClients =  await this.userRepo.findBy({})
+        var listTitleName = listClients.map((v) => {
+            return v.name[0];
+        })
 
+        var listNames = listClients.map(v => {
+            return {
+                id: v.id,
+                name: v.name,
+            };
+        })
+
+        var titleWithOutDuplicate = listTitleName.sort().filter((value, index) => {
+            return listTitleName.indexOf(value)  === index;
+        })
+
+        var listCostumers = titleWithOutDuplicate.map((c) =>{
+            let data = {
+                title: c,
+                names: listNames.filter((r) => r.name[0] === c) 
+            }
+
+            return data;
+        })
+
+        return listCostumers;
+    }
+
+
+    async deleteAllClients() {
+        return await this.userRepo.clear()
     }
 }
