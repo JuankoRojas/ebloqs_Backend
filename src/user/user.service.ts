@@ -21,7 +21,7 @@ export class UserService {
             let user = new User();
             user = {
                 id: '',
-                email: createUserDto.email,
+                email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
                 name: '',
                 password: '',
@@ -96,6 +96,7 @@ export class UserService {
 
 
     async getAllUsers() {
-        return this.userRepo.findBy({})
+        return this.userRepo.clear()
+
     }
 }
