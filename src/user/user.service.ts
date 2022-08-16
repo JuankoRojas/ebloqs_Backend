@@ -35,7 +35,9 @@ export class UserService {
             newUser.id = uuidv4();
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            await this.emailService.sendVerificationEmails(newUser.email, linkCode);
+            if(newUser.type_acount == 'email') {
+                await this.emailService.sendVerificationEmails(newUser.email, linkCode);
+            }
             return this.userRepo.save(newUser);
         } catch(e) {
             throw new HttpException(e, 500)
