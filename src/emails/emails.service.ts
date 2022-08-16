@@ -5,14 +5,14 @@ import { HttpException, Injectable } from '@nestjs/common';
 export class EmailsService {
     constructor(private mailerService: MailerService) {}
 
-    async sendVerificationEmails(toEmail: string) { 
+    async sendVerificationEmails(toEmail: string, urlCode: string) { 
         try {
             const respValidating = await this.mailerService.sendMail({
                 to: toEmail,
-                from: 'user@outlook.com', // Senders email address
+                from: 'ebloqs@ebloqs.com', // Senders email address
                 subject: 'Testing Nest MailerModule ✔', // Subject line
                 text: 'welcome', // plaintext body
-                html: '<b>welcome</b>', 
+                html: `<a href='${urlCode}'>welcome verify your email</b>`, 
             });
 
 

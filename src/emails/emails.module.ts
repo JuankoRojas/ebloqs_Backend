@@ -18,7 +18,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         },
       },
       defaults: {
-        from: '"nest-modules" <user@outlook.com>', // outgoing email ID
+        from: '"Support" <ebloqs@ebloqs.com>', // outgoing email ID
       },
       template: {
         dir: process.cwd() + '/template/',
