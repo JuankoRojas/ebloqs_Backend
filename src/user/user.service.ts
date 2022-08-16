@@ -1,6 +1,6 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -105,6 +105,7 @@ export class UserService {
             return {
                 id: v.id,
                 name: v.name,
+                email: v.email,
             };
         })
 
@@ -112,10 +113,45 @@ export class UserService {
             return listTitleName.indexOf(value)  === index;
         })
 
-        var listCostumers = titleWithOutDuplicate.map((c) =>{
+        var listCostumers = titleWithOutDuplicate.map((c) => {
             let data = {
                 title: c,
-                names: listNames.filter((r) => r.name[0] === c) 
+                names: listNames.filter((r) => r.name[0] === c).slice(0, 2)
+            }
+
+            return data;
+        })
+
+        return listCostumers;
+    }
+
+    async getSearchClient(text: string) {
+        const uusers = this.userRepo.find();
+
+        const filters = (await uusers).filter(u => {
+            return u.name.startsWith(text);
+        })
+
+        var listTitleName = filters.map((v) => {
+            return v.name[0];
+        })
+
+        var listNames = filters.map(v => {
+            return {
+                id: v.id,
+                name: v.name,
+                email: v.email,
+            };
+        })
+
+        var titleWithOutDuplicate = listTitleName.sort().filter((value, index) => {
+            return listTitleName.indexOf(value)  === index;
+        })
+
+        var listCostumers = titleWithOutDuplicate.map((c) => {
+            let data = {
+                title: c,
+                names: listNames.filter((r) => r.name[0] === c)
             }
 
             return data;
