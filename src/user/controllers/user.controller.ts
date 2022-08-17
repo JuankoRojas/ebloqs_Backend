@@ -6,13 +6,18 @@ import {
     Patch,
     Param,
     Delete,
+    UseGuards,
+    Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { RecoveryUserDto } from '../dto/recovery.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ValidateUserDto } from '../dto/validate.dto';
 import { UserService } from '../user.service';
+
+import { Request } from 'express';
 
 @ApiTags('user')
 @Controller('user')
@@ -22,6 +27,12 @@ export class UserController {
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
         return this.userService.create(createUserDto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/me')
+    meInfo(@Req() req: Request) {
+        return this.userService.findOne(req['user']['userId']);
     }
 
     @Post('validate')
