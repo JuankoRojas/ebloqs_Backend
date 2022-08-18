@@ -134,6 +134,8 @@ export class AuthService {
                 process.env.KEY_CONTENTS,
                 "text"
             );
+
+            console.log(request['code'])
         
             const accessToken = await auth.accessToken(request['code'].toString());
         
