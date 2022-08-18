@@ -125,7 +125,7 @@ export class AuthService {
             const configAuth = <AppleAuthConfig> {
               client_id: 'com.ebloqs.signinservice',
               team_id: process.env.TEAM_ID,
-              redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinWithApple", 
+              redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinwithapple", 
               key_id: process.env.KEY_ID,
             };
 
