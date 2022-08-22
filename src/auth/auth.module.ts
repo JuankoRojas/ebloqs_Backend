@@ -20,7 +20,7 @@ import { AdminStrategy } from './admin.strategy';
                 return {
                     secret: configService.jwtsecret,
                     signOptions: {
-                        expiresIn: '1d',
+                        expiresIn: '2h',
                     },
                 };
             },
