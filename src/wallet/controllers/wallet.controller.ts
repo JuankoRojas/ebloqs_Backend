@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { CreateWalletDto } from '../dto/wallet.dto';
@@ -18,5 +18,11 @@ export class WalletController {
   @Post()
   createUserWallet(@Body() wallet: CreateWalletDto, @Req() req: Request) {
       return this.walletService.createWallet(req['user']['userId'], wallet);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/balance')
+  getWalletBalance(@Req() req: Request) {
+      return this.walletService.getWalletBalance(req['user']['userId']);
   }
 }

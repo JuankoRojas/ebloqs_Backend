@@ -1,21 +1,29 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { EmailsService } from 'src/emails/emails.service';
+
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { RecoveryUserDto } from './dto/recovery.dto';
+import { User } from './entities/user.entity';
+import { Address } from './entities/address.entity';
+
+import { EmailsService } from 'src/emails/emails.service';
+import { PersonalInfo } from './entities/personal_info.entity';
+import { Documents } from './entities/document.entity';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User, 'mysqlDB') private userRepo: Repository<User>,
+        @InjectRepository(Address, 'mysqlDB') private addressRepo: Repository<Address>,
+        @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: Repository<PersonalInfo>,
+        @InjectRepository(Documents, 'mysqlDB') private documentsRepo: Repository<Documents>,
         private emailService: EmailsService,
     ) {}
+
     async create(createUserDto: CreateUserDto) {
         try {
             let user = new User();
@@ -96,7 +104,6 @@ export class UserService {
 
     }
 
-
     async getAllUsers() {
         var listClients =  await this.userRepo.findBy({})
         var listTitleName = listClients.map((v) => {
@@ -162,8 +169,10 @@ export class UserService {
         return listCostumers;
     }
 
-
     async deleteAllClients() {
         return await this.userRepo.clear()
     }
+
+    
+
 }

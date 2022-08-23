@@ -7,18 +7,24 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Wallet {
+export class Address {
     @PrimaryColumn()
     id: string;
 
     @Column({ type: 'varchar', nullable: false })
-    ownerId: string;
+    country: string;
+
+    @Column({ type: 'varchar', nullable: false })
+    city: string;
+
+    @Column({ type: 'varchar', nullable: false })
+    address1: string;
+
+    @Column({ nullable: true })
+    postalCode: number;
 
     @Column({ type: 'varchar', nullable: true })
-    password: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    public_key: string;
+    ownerID: string;
 
     @CreateDateColumn({
         type: 'timestamp',
