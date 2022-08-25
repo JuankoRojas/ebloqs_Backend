@@ -25,7 +25,7 @@ export class UserService {
         try {
             let user = new User();
             user = {
-                id: '',
+                id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
                 name: `${createUserDto.name.toLowerCase()}`,
@@ -35,15 +35,14 @@ export class UserService {
                 create: new Date(),
                 update: new Date(),
             };
-            const newUser = this.userRepo.create(user);
+            const newUser = await this.userRepo.save(user);
             console.log(newUser)
-            newUser.id = uuidv4();
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
             if(newUser.typeacount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
-            return this.userRepo.save(newUser);
+            return newUser;
         } catch(e) {
             throw new HttpException(e, 500)
         }
