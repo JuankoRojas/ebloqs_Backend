@@ -24,13 +24,14 @@ export class UserService {
     async create(createUserDto: CreateUserDto) {
         try {
             let user = new User();
+            console.log(createUserDto.type_acount)
             user = {
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
+                typeacount: `${createUserDto.type_acount}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: '',
-                typeacount: `${createUserDto.type_acount}`,
                 emailverificated: false,
                 create: new Date(),
                 update: new Date(),
