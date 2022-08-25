@@ -21,13 +21,13 @@ export class User {
     deviceID: string[];
 
     @Column({ type: 'varchar' })
-    type_acount: string;
+    typeacount: string;
 
     @Column({ type: 'varchar', nullable: true })
     password: string;
 
     @Column({ type: 'bool', nullable: true })
-    email_verificated: boolean;
+    emailverificated: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',

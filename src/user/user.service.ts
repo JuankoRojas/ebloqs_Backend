@@ -30,8 +30,8 @@ export class UserService {
                 deviceID: [createUserDto.deviceID],
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: '',
-                type_acount: `${createUserDto.type_acount}`,
-                email_verificated: false,
+                typeacount: `${createUserDto.type_acount}`,
+                emailverificated: false,
                 create: new Date(),
                 update: new Date(),
             };
@@ -40,7 +40,7 @@ export class UserService {
             newUser.id = uuidv4();
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            if(newUser.type_acount == 'email') {
+            if(newUser.typeacount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
             return this.userRepo.save(newUser);
@@ -76,10 +76,10 @@ export class UserService {
 
     async validateEmailUser(code: string) {
         let vuser = await this.findOne(code);
-        if(vuser.email_verificated){
+        if(vuser.emailverificated){
             throw new UnauthorizedException('Este código ya caducó')
         } else {
-            vuser.email_verificated = true;
+            vuser.emailverificated = true;
             await this.userRepo.save(vuser);
             return {
                 message: `Correo ${vuser.email} verificado`
