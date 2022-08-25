@@ -29,7 +29,6 @@ export class UserService {
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
                 name: createUserDto.name.toLowerCase(),
-                lastname: "",
                 password: '',
                 type_acount: createUserDto.type_acount,
                 email_verificated: false,

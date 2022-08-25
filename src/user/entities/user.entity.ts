@@ -15,9 +15,6 @@ export class User {
     name: string;
 
     @Column({ type: 'varchar', nullable: true })
-    lastname: string;
-
-    @Column({ type: 'varchar', nullable: true })
     email: string;
 
     @Column({ array: false, type: 'varchar', nullable: true })
