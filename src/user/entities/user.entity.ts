@@ -16,18 +16,18 @@ export class User {
 
     @Column({ type: 'varchar' })
     email: string;
+    
+    @Column({ type: 'text', nullable: true })
+    typeAcount: string;
 
     @Column({ array: false, type: 'varchar' })
     deviceID: string[];
 
-    @Column({ type: 'text' })
-    typeAcount: string;
+    @Column({ type: 'bool', nullable: true })
+    emailVerificated: boolean;
 
     @Column({ type: 'varchar', nullable: true })
     password: string;
-
-    @Column({ type: 'bool', nullable: true })
-    emailVerificated: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',

@@ -23,23 +23,23 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto) {
         try {
-            console.log(typeof createUserDto.type_acount)
+            console.log(createUserDto.type_acount)
             const user = {
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
-                typeacount: `${createUserDto.type_acount}`,
+                typeAcount: `${createUserDto.type_acount}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: "",
                 emailverificated: false,
                 create: new Date(),
                 update: new Date(),
             };
+            console.log(user)
             const newUser = await this.userRepo.save(user);
-            console.log(newUser)
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            if(newUser.typeacount == 'email') {
+            if(newUser.typeAcount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
             return newUser;
