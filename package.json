@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node --optimize_for_size dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -94,6 +94,6 @@
   },
   "engines": {
     "node": "16.x",
-    "npm": "8.12.1"
+    "npm": "8.18.0"
   }
 }
