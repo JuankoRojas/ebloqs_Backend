@@ -14,7 +14,7 @@ export class PersonalInfo {
     @Column({ type: 'varchar', nullable: false })
     name: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     lastname: string;
 
     @Column({ type: 'varchar', nullable: true })

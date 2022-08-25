@@ -14,13 +14,13 @@ export class User {
     @Column({ type: 'varchar', nullable: true })
     name: string;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar' })
     email: string;
 
-    @Column({ array: false, type: 'varchar', nullable: true })
+    @Column({ array: false, type: 'varchar' })
     deviceID: string[];
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar' })
     type_acount: string;
 
     @Column({ type: 'varchar', nullable: true })
