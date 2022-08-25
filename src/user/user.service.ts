@@ -23,9 +23,8 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto) {
         try {
-            
             console.log(typeof createUserDto.type_acount)
-            const user = <User>{
+            const user = {
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
