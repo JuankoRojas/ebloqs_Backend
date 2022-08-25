@@ -28,13 +28,14 @@ export class UserService {
                 id: '',
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
-                name: createUserDto.name.toLowerCase(),
+                name: `${createUserDto.name.toLowerCase()}`,
                 password: '',
-                type_acount: createUserDto.type_acount,
+                type_acount: `${createUserDto.type_acount}`,
                 email_verificated: false,
                 create: new Date(),
                 update: new Date(),
             };
+            console.log(user)
             const newUser = this.userRepo.create(user);
             newUser.id = uuidv4();
             const linkCode = this.generatelinkvalidate(newUser.id);
