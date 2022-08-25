@@ -75,10 +75,10 @@ export class UserService {
 
     async validateEmailUser(code: string) {
         let vuser = await this.findOne(code);
-        if(vuser.emailverificated){
+        if(vuser.emailVerificated){
             throw new UnauthorizedException('Este código ya caducó')
         } else {
-            vuser.emailverificated = true;
+            vuser.emailVerificated = true;
             await this.userRepo.save(vuser);
             return {
                 message: `Correo ${vuser.email} verificado`

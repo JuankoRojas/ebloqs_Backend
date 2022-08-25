@@ -20,14 +20,14 @@ export class User {
     @Column({ array: false, type: 'varchar' })
     deviceID: string[];
 
-    @Column({ type: 'varchar' })
-    typeacount: string;
+    @Column({ type: 'text' })
+    typeAcount: string;
 
     @Column({ type: 'varchar', nullable: true })
     password: string;
 
     @Column({ type: 'bool', nullable: true })
-    emailverificated: boolean;
+    emailVerificated: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',
