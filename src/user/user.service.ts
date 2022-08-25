@@ -35,8 +35,8 @@ export class UserService {
                 create: new Date(),
                 update: new Date(),
             };
-            console.log(user)
             const newUser = this.userRepo.create(user);
+            console.log(newUser)
             newUser.id = uuidv4();
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
