@@ -15,10 +15,10 @@ import { Storages3Service } from 'src/storages3/storages3.service';
 @Global()
 @Module({
     imports: [TypeOrmModule.forFeature([
-        User,
         Address,
         Documents,
         PersonalInfo,
+        User,
     ], 'mysqlDB')],
     controllers: [UserController, ClientsController],
     providers: [UserService, AddressService, DocumentsService, Storages3Service],
