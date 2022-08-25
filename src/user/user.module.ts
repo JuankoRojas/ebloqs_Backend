@@ -10,12 +10,13 @@ import { Documents } from './entities/document.entity';
 import { PersonalInfo } from './entities/personal_info.entity';
 import { AddressService } from './services/address.service';
 import { DocumentsService } from './services/documents.service';
+import { Storages3Service } from 'src/storages3/storages3.service';
 
 @Global()
 @Module({
     imports: [TypeOrmModule.forFeature([User, Address, Documents, PersonalInfo], 'mysqlDB')],
     controllers: [UserController, ClientsController],
-    providers: [UserService, AddressService, DocumentsService],
+    providers: [UserService, AddressService, DocumentsService, Storages3Service],
     exports: [UserService],
 })
 export class UserModule {}

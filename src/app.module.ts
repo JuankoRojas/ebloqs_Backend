@@ -9,6 +9,7 @@ import { environment } from './enviroment';
 import { UserModule } from './user/user.module';
 import { EmailsModule } from './emails/emails.module';
 import { WalletModule } from './wallet/wallet.module';
+import { Storages3Module } from './storages3/storages3.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { WalletModule } from './wallet/wallet.module';
         UserModule,
         EmailsModule,
         WalletModule,
+        Storages3Module,
     ],
     controllers: [AppController],
     providers: [AppService],

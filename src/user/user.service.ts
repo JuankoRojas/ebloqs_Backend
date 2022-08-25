@@ -1,6 +1,6 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
@@ -8,19 +8,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RecoveryUserDto } from './dto/recovery.dto';
 import { User } from './entities/user.entity';
-import { Address } from './entities/address.entity';
 
 import { EmailsService } from 'src/emails/emails.service';
 import { PersonalInfo } from './entities/personal_info.entity';
-import { Documents } from './entities/document.entity';
+import { UpdatePersonalDataDto } from './dto/personal_data.dto';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User, 'mysqlDB') private userRepo: Repository<User>,
-        @InjectRepository(Address, 'mysqlDB') private addressRepo: Repository<Address>,
         @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: Repository<PersonalInfo>,
-        @InjectRepository(Documents, 'mysqlDB') private documentsRepo: Repository<Documents>,
         private emailService: EmailsService,
     ) {}
 
@@ -173,6 +170,12 @@ export class UserService {
         return await this.userRepo.clear()
     }
 
-    
+    async updatePersonalData(userID: string, data: UpdatePersonalDataDto) {
+        const newData = await this.personalInfoRepo.create(data);
+        newData.id = uuidv4();
+        newData.ownerID = userID;
+
+        return await this.personalInfoRepo.save(newData);
+    }
 
 }
