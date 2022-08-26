@@ -31,7 +31,7 @@ export class UserService {
                 typeAcount: `${createUserDto.type_acount}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: "",
-                emailverificated: false,
+                emailVerificated: false,
                 create: new Date(),
                 update: new Date(),
             };
