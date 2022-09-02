@@ -11,7 +11,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             name: 'mysqlDB',
             inject: [config.KEY],
             useFactory: (configService: ConfigType<typeof config>) => {
-                
                 try {
                     return {
                         type: 'mysql',
@@ -20,8 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                         password: configService.mysql.password,
                         user: configService.mysql.user,
                         host: configService.mysql.host,
-                        synchronize: false,
-                        
+                        synchronize: true,
                         autoLoadEntities: true,
                         ssl: false,
                     };

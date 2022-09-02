@@ -2,6 +2,7 @@
 /dist
 /node_modules
 *.env
+post_data
 
 # Logs
 logs
