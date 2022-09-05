@@ -46,7 +46,7 @@ export class WalletService {
     }
 
     async getWalletBalance(userID: string) {
-        var userData = await this.userService.findOne(userID);
+        var userData = await this.userService.findOneUser(userID);
         var walletData = await this.walletRepo.findOne({ where: { ownerId: userID } });
 
         var balance = await this.blockchainService.getBalance(walletData.public_key);

@@ -1,11 +1,11 @@
-version: '3.3'
+  version: '3.3'
 
 services:
   mysql:
     image: mysql:8
     environment:
       - MYSQL_DATABASE=eblooqsdb
-      - MYSQL_USERNAME=root
+      - MYSQL_USERNAME=admin
       - MYSQL_ROOT_PASSWORD=123456
     ports:
       - "3306:3306"

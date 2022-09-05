@@ -1,5 +1,5 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
-import AppleAuth, { AppleAuthConfig }  from "apple-auth";
+import AppleAuth, { AppleAuthConfig } from "apple-auth";
 import appleSigninAuth from 'apple-signin-auth';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
@@ -16,12 +16,12 @@ export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
-    ) {}
-    
+    ) { }
+
     async validatePasswordUser(email: string, password: string) {
         const user = await this.usersService.findByEmail(email);
         if (user) {
-            
+
             try {
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (isMatch) {
@@ -41,33 +41,34 @@ export class AuthService {
     }
 
 
-    
-        
+
+
     async validateUser(email: string, deviceID: string): Promise<UserEnt> {
         const user = await this.usersService.findByEmail(email);
         if (user) {
-   
             const isMatch = user.deviceID.indexOf(deviceID);
-            if (isMatch != -1) {
+            return user
+           /* if (isMatch != -1) {
                 return user;
             } else {
                 throw new UnauthorizedException('Device unauthorized');
-            }
+            }  */
         } else {
             throw new UnauthorizedException('User not found');
         }
+        
     }
-
+    //1- login
     async login(user: any) {
-        console.log(user);
         const validUser = await this.validateUser(user.email, user.deviceID);
         const payload = { userid: validUser.id, deviceID: validUser.deviceID };
         return {
             access_token: this.jwtService.sign(payload),
         };
     }
-
+    // 2- registro de usuarios
     async registerUser(userData: CreateUserDto) {
+        console.log(userData);
         try {
             const userRegister = await this.usersService.create(userData);
             const payload = {
@@ -87,7 +88,7 @@ export class AuthService {
     async getProfileByToken(
         loginDto: string,
         res: Response
-      ): Promise<any> {
+    ): Promise<any> {
         try {
             const data = await appleSigninAuth.verifyIdToken(loginDto, {
                 audience: [
@@ -95,38 +96,38 @@ export class AuthService {
                     process.env.SERVICE_ID
                 ],
             });
-        
-            return res.json({data});
-            
+
+            return res.json({ data });
+
         } catch (error) {
             console.log(`Callback error: ${error}`);
             throw new HttpException(error, 500)
         }
-      }
-
-    async callbackApple (request: Request, res: Response) {
+    }
+    // >>>> no funcional <<<<
+    async callbackApple(request: Request, res: Response) {
         try {
             const redirect = `intent://callback?${new URLSearchParams(
-              request.body
+                request.body
             ).toString()}#Intent;package=${process.env.ANDROID_PACKAGE_IDENTIFIER
-              };scheme=signinwithapple;end`;
-        
+                };scheme=signinwithapple;end`;
+
             console.log(`Redirecting to ${redirect}`);
-        
+
             return res.redirect(307, redirect)
-          } catch (error) {
+        } catch (error) {
             console.log(`Callback error: ${error}`);
             throw new Error(error);
-          }
+        }
     }
-
-    async signinApple (request: Request, res: Response) {
+    // >>>> no funcional <<<<
+    async signinApple(request: Request, res: Response) {
         try {
-            const configAuth = <AppleAuthConfig> {
-              client_id: 'com.ebloqs.signinservice',
-              team_id: process.env.TEAM_ID,
-              redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinwithapple", 
-              key_id: process.env.KEY_ID,
+            const configAuth = <AppleAuthConfig>{
+                client_id: 'com.ebloqs.signinservice',
+                team_id: process.env.TEAM_ID,
+                redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinwithapple",
+                key_id: process.env.KEY_ID,
             };
 
             const auth = new AppleAuth(
@@ -136,13 +137,13 @@ export class AuthService {
             );
 
             console.log(request['code'])
-        
+
             const accessToken = await auth.accessToken(request['code'].toString());
-        
+
             return this.getProfileByToken(accessToken.id_token, res);
-          } catch (error) {
+        } catch (error) {
             console.log(`signInWithApple error: ${error}`);
             throw new HttpException(error, 500);
-          }
+        }
     }
 }

@@ -54,7 +54,7 @@ export class UserService {
         return this.userRepo.findOne({ where: { email } });
     }
 
-    findOne(id: string) {
+    findOneUser(id: string) {
         return this.userRepo.findOne({ where: { id } });
     }
 
@@ -77,7 +77,7 @@ export class UserService {
 
     async validateEmailUser(code: string) {
         console.log(code)
-        let vuser = await this.findOne(code);
+        let vuser = await this.findOneUser(code);
 
         if(vuser.emailVerificated){
             throw new UnauthorizedException('Este código ya caducó')

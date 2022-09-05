@@ -12,7 +12,7 @@ export class Storages3Service {
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: urlKey,
             };
-            
+            console.log(params)
             return this.uploadFile(params);
         } catch (error) {
             throw new HttpException(`Error al crear el documento: ${error}`, 351)
@@ -28,7 +28,8 @@ export class Storages3Service {
                 return data;
             })
             return data.Location;
-        } catch (error) {
+        } catch (error: any) {
+            console.log(error)
             throw new HttpException(`Error al cargar el archivo: ${error}`, 350)
         }
     }

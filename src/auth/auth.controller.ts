@@ -8,8 +8,8 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
-
+    constructor(private readonly authService: AuthService) { }
+    // 2- login usuarios
     @UseGuards(AuthGuard('local'))
     @Post('/login')
     async login(@Req() payload: Request) {
@@ -22,19 +22,22 @@ export class AuthController {
         return this.authService.login(payload['user']);
     }
 
-    // @UseGuards(LocalAuthGuard)
+    // 1- registro usuario
     @Post('/register')
     async register(@Body() payload: CreateUserDto) {
         return this.authService.registerUser(payload);
     }
-    
+
+
+
+    // >>>> no funcional <<<<
     @Post('/callback')
     async loginwithAppleinAdroid(@Req() payload: Request, @Res() res: Response) {
         return this.authService.callbackApple(payload.body, res);
     }
-    
+    // >>>> no funcional <<<<
     @Post('/callback/signinwithapple')
-    async loginwithApple(@Body() request: Request, @Res() res:Response) {
+    async loginwithApple(@Body() request: Request, @Res() res: Response) {
         return this.authService.signinApple(request, res);
     }
 }

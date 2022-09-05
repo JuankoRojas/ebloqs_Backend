@@ -40,12 +40,14 @@ export class UserController {
         return this.userService.create(createUserDto);
     }
 
+    // 3- obtener mi informacion (usuario)
     @UseGuards(JwtAuthGuard)
     @Post('/me')
     meInfo(@Req() req: Request) {
-        return this.userService.findOne(req['user']['userId']);
+        return this.userService.findOneUser(req['user']['userId']);
     }
     
+
     @UseGuards(JwtAuthGuard)
     @ApiConsumes('multipart/form-data')
     @ApiBearerAuth()
@@ -64,26 +66,28 @@ export class UserController {
             },
         },
     })
+    // 4- carga de imagen documento de identidad. (falta apartar por lados)
     @UseInterceptors(FilesInterceptor('files'))
     @Post('/documents')
     createDocument(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
+        console.log("entro acá")
         return this.docService.createDocument(files, req['user']['userId'], type['type']);
     }
     
-    
+    // 5- guardar una direccion de un usuario.
     @UseGuards(JwtAuthGuard)
     @Post('/address')
     createAddress(@Req() req: Request, @Body() addres: CreateAddressDto) {
         return this.addresService.createAddresFromUser(req['user']['userId'], addres);
     }
-    
+    // 6- actualizar datos personales.
     @UseGuards(JwtAuthGuard)
     @Post('/personalData')
     createPersonalData(@Req() req: Request, @Body() data: UpdatePersonalDataDto) {
         return this.userService.updatePersonalData(req['user']['userId'], data);
     }
 
-
+    // validar usuario por correo.
     @Post('validate')
     findAll(@Body() code: ValidateUserDto) {
         return this.userService.validateEmailUser(code.code);
