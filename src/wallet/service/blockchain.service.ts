@@ -6,7 +6,7 @@ export class BlockchainService {
     constructor(
         // private configService: ConfigType<typeof config>,
         private httpService: HttpService,
-    ) {}
+    ) { }
     async getMnemonic(password: string): Promise<any> {
         try {
             return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export class BlockchainService {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    // No implementado.
     async getSupplyEbl(): Promise<any> {
         try {
             return new Promise((resolve, reject) => {
@@ -85,4 +85,31 @@ export class BlockchainService {
         }
     }
 
+    async getApprove(data): Promise<any> {
+        try {
+            return new Promise((resolve, reject) => {
+                this.httpService
+                    .post(
+                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/approve/?spender=${data.spender}&amount=${data.amount}`, null,
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        },
+                    )
+                    .subscribe(
+                        (data) => {
+                            resolve(data.data);
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                    );
+            });
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+

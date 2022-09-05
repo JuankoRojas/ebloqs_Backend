@@ -15,31 +15,31 @@ export class WalletService {
         @InjectRepository(Wallet, 'mysqlDB') private walletRepo: Repository<Wallet>,
         private readonly blockchainService: BlockchainService,
         private readonly userService: UserService,
-    ) {}
+    ) { }
 
     async createWallet(userId: string, walletDTO: CreateWalletDto) {
 
         try {
-            const newWallter = <Wallet> {
+            const newWallter = <Wallet>{
                 id: uuidv4(),
                 ownerId: userId,
                 password: await bcrypt.hash(walletDTO.password, 10),
             }
-    
+
             const refWallet = this.walletRepo.create(newWallter);
-            
+
             const mnemonicS = await this.blockchainService.getMnemonic(refWallet.password);
 
             refWallet.public_key = mnemonicS['data']['address']
             const savedwallet = await this.walletRepo.save(refWallet);
-    
-    
+
+
             return {
                 id_wallet: savedwallet.id,
                 public_key: savedwallet.public_key,
                 mnemonic: mnemonicS['data']['mnemonic'],
             };
-            
+
         } catch (error) {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -54,5 +54,22 @@ export class WalletService {
         return {
             balance: balance['data'],
         };
+    }
+
+
+    async getApprove(payload: any) {
+        try {
+            let data = {
+                "spender": payload.spender,
+                "amount": payload.amount
+            }
+            const approve = await this.blockchainService.getApprove(data);
+
+            return approve
+
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

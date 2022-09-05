@@ -25,4 +25,11 @@ export class WalletController {
   getWalletBalance(@Req() req: Request) {
       return this.walletService.getWalletBalance(req['user']['userId']);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/approve')
+  getApprove(@Req() req: Request, @Body() data) {
+      return this.walletService.getApprove(data);
+  }
+
 }

@@ -9,7 +9,7 @@ export class Storages3Service {
             const urlKey = `document/${file.originalname}`;
             const params = {
                 Body: file.buffer,
-                Bucket: process.env.AWS_BUCKET_NAME,
+                Bucket: "ebloqs",
                 Key: urlKey,
             };
             console.log(params)
@@ -17,7 +17,6 @@ export class Storages3Service {
         } catch (error) {
             throw new HttpException(`Error al crear el documento: ${error}`, 351)
         }
-
     }
 
 

@@ -106,10 +106,7 @@ export class UserService {
 
     async getAllUsers() {
         var listClients =  await this.userRepo.findBy({})
-        var listTitleName = listClients.map((v) => {
-            return v.name[0];
-        })
-
+        
         var listNames = listClients.map(v => {
             return {
                 id: v.id,
@@ -118,20 +115,7 @@ export class UserService {
             };
         })
 
-        var titleWithOutDuplicate = listTitleName.sort().filter((value, index) => {
-            return listTitleName.indexOf(value)  === index;
-        })
-
-        var listCostumers = titleWithOutDuplicate.map((c) => {
-            let data = {
-                title: c,
-                names: listNames.filter((r) => r.name[0] === c).slice(0, 2)
-            }
-
-            return data;
-        })
-
-        return listCostumers;
+        return listNames;
     }
 
     async getSearchClient(text: string) {
