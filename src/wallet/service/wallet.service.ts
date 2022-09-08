@@ -72,4 +72,30 @@ export class WalletService {
         }
 
     }
+    async getTransfer(payload: any) {
+        try {
+            let data = {
+                "to": payload.to,
+                "amount": payload.amount
+            }
+            const approve = await this.blockchainService.getTransfer(data);
+
+            return approve
+
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    async getTotalSupply() {
+        try {
+            const approve = await this.blockchainService.getTotalSupply();
+
+            return approve
+
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 }

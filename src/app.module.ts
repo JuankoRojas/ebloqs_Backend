@@ -10,13 +10,16 @@ import { UserModule } from './user/user.module';
 import { EmailsModule } from './emails/emails.module';
 import { WalletModule } from './wallet/wallet.module';
 import { Storages3Module } from './storages3/storages3.module';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
     imports: [
+        LoggerModule.forRoot(),
         ConfigModule.forRoot({
             envFilePath: environment[process.env.NODE_ENV] || '.env',
             load: [config],
             isGlobal: true,
+            
             // validationSchema: Joi.object({}),
         }),
         DatabaseModule,

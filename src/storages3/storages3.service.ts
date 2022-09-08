@@ -6,13 +6,12 @@ import { S3 } from 'aws-sdk';
 export class Storages3Service {
     async createFileDocument(file: Express.Multer.File): Promise<string> {
         try {
-            const urlKey = `document/${file.originalname}`;
+            const urlKey = `document/front/${file.originalname}`;
             const params = {
                 Body: file.buffer,
-                Bucket: "ebloqs",
+                Bucket: process.env.AWS_BUCKET_NAME,
                 Key: urlKey,
             };
-            console.log(params)
             return this.uploadFile(params);
         } catch (error) {
             throw new HttpException(`Error al crear el documento: ${error}`, 351)

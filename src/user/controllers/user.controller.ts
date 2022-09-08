@@ -70,7 +70,6 @@ export class UserController {
     @UseInterceptors(FilesInterceptor('files'))
     @Post('/documents')
     createDocument(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
-        console.log("entro acá")
         return this.docService.createDocument(files, req['user']['userId'], type['type']);
     }
     
