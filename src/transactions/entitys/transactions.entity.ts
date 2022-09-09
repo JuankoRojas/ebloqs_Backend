@@ -22,6 +22,9 @@ export class Transactions {
 
     @Column({ type: 'varchar', nullable: true })
     type: string;
+    
+    @Column({ type: 'varchar', nullable: true })
+    status: string;
 
     @CreateDateColumn({
         type: 'timestamp',

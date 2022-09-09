@@ -29,7 +29,7 @@ export class WalletService {
             const refWallet = this.walletRepo.create(newWallter);
 
             const mnemonicS = await this.blockchainService.getMnemonic(refWallet.password);
-
+            console.log(mnemonicS);
             refWallet.public_key = mnemonicS['data']['address']
             const savedwallet = await this.walletRepo.save(refWallet);
 
@@ -38,6 +38,7 @@ export class WalletService {
                 id_wallet: savedwallet.id,
                 public_key: savedwallet.public_key,
                 mnemonic: mnemonicS['data']['mnemonic'],
+                address : mnemonicS['data']['address']
             };
 
         } catch (error) {
@@ -49,7 +50,7 @@ export class WalletService {
         var userData = await this.userService.findOneUser(userID);
         var walletData = await this.walletRepo.findOne({ where: { ownerId: userID } });
 
-        var balance = await this.blockchainService.getBalance(walletData.public_key);
+        var balance = await this.blockchainService.getBalance(walletData.public_key); 
 
         return {
             balance: balance['data'],

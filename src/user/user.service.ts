@@ -21,7 +21,7 @@ export class UserService {
         @InjectRepository(UserEnt, 'mysqlDB') private userRepo: UserEntRepository,
         @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: PersonalInfoRepository,
         private emailService: EmailsService,
-    ) {}
+    ) { }
 
     async create(createUserDto: CreateUserDto) {
         try {
@@ -33,6 +33,7 @@ export class UserService {
                 typeAcount: `${createUserDto.type_acount}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: "",
+                idRef: randomCode(),
                 emailVerificated: false,
                 create: new Date(),
                 update: new Date(),
@@ -41,11 +42,11 @@ export class UserService {
             const newUser = await this.userRepo.save(user);
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            if(newUser.typeAcount == 'email') {
+            if (newUser.typeAcount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
             return newUser;
-        } catch(e) {
+        } catch (e) {
             throw new HttpException(e, 500)
         }
     }
@@ -79,7 +80,7 @@ export class UserService {
         console.log(code)
         let vuser = await this.findOneUser(code);
 
-        if(vuser.emailVerificated){
+        if (vuser.emailVerificated) {
             throw new UnauthorizedException('Este código ya caducó')
         } else {
             vuser.emailVerificated = true;
@@ -92,8 +93,8 @@ export class UserService {
 
     async recoveryUser(user: RecoveryUserDto) {
         const findUser = await this.findByEmail(user.email);
-        if(user) {
-            findUser.password =  await bcrypt.hash(user.password, 10);
+        if (user) {
+            findUser.password = await bcrypt.hash(user.password, 10);
             await this.userRepo.save(findUser);
             return {
                 message: 'password changed'
@@ -105,8 +106,8 @@ export class UserService {
     }
 
     async getAllUsers() {
-        var listClients =  await this.userRepo.findBy({})
-        
+        var listClients = await this.userRepo.findBy({})
+
         var listNames = listClients.map(v => {
             return {
                 id: v.id,
@@ -138,7 +139,7 @@ export class UserService {
         })
 
         var titleWithOutDuplicate = listTitleName.sort().filter((value, index) => {
-            return listTitleName.indexOf(value)  === index;
+            return listTitleName.indexOf(value) === index;
         })
 
         var listCostumers = titleWithOutDuplicate.map((c) => {
@@ -165,4 +166,33 @@ export class UserService {
         return await this.personalInfoRepo.save(newData);
     }
 
+}
+
+function randomCode() {
+    var characters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    var numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+
+    let A1 = randomTwoCharacters(characters);
+    let A2 = randomTwoCharacters(numbers)
+    let B1 = randomTwoCharacters(characters);
+    let B2 = randomTwoCharacters(numbers)
+    let refCode = `${B1}${A2}${A1}${B2}`
+    return refCode
+}
+
+function randomTwoCharacters(array) {
+    var idvalue = '';
+    var n = 2;
+
+    if (array.length > 10) {
+        for (var i = 0; i < n; i++) {
+            idvalue += array[Math.floor(Math.random() * 26)];
+        }
+        return idvalue;
+    } else {
+        for (var i = 0; i < n; i++) {
+            idvalue += array[Math.floor(Math.random() * 10)];
+        }
+        return idvalue.toString()
+    }
 }

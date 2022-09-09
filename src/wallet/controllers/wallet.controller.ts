@@ -13,7 +13,7 @@ export class WalletController {
   constructor(
     private readonly walletService: WalletService
   ) { }
-
+  // crear una wallet.
   @UseGuards(JwtAuthGuard)
   @Post()
   createUserWallet(@Body() wallet: CreateWalletDto, @Req() req: Request) {
@@ -21,8 +21,9 @@ export class WalletController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/balance')
+  @Post('/balance')
   getWalletBalance(@Req() req: Request) {
+    console.log(req['user'])
     return this.walletService.getWalletBalance(req['user']['userId']);
   }
 

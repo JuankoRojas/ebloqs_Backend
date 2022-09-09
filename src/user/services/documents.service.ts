@@ -50,18 +50,6 @@ export class DocumentsService {
         } catch (e: any) {
             console.log(e.message);
         }
-
-        /* let urls = await  this.upLoadsDocuments(files);
-       const newDocument = <Documents> <unknown>{
-           id: uuidv4(),
-           type: type,
-           documentURL: urls,
-           ownerID: userID,
-           side : "front"
-       };
-
-       const cDocument = this.docRepo.create(newDocument);
-       return await this.docRepo.save(cDocument);  */
     }
 
 

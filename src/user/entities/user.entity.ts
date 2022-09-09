@@ -29,6 +29,9 @@ export class UserEnt {
     @Column({ type: 'varchar', nullable: true })
     password: string;
 
+    @Column({ type: 'varchar', nullable: true })
+    idRef: string;
+
     @Column({ type: 'bool', nullable: true, default: true })
     status: boolean;
 
