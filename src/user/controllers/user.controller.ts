@@ -20,7 +20,7 @@ import { ValidateUserDto } from '../dto/validate.dto';
 import { UserService } from '../user.service';
 
 import { Request } from 'express';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { DocumentsService } from '../services/documents.service';
 import { AddressService } from '../services/address.service';
 import { CreateAddressDto } from '../dto/create_addres.dto';
@@ -30,10 +30,10 @@ import { UpdatePersonalDataDto } from '../dto/personal_data.dto';
 @Controller('user')
 export class UserController {
     constructor(
-            private readonly userService: UserService,
-            private readonly docService: DocumentsService,
-            private readonly addresService: AddressService,
-        ) {}
+        private readonly userService: UserService,
+        private readonly docService: DocumentsService,
+        private readonly addresService: AddressService,
+    ) { }
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
@@ -46,7 +46,7 @@ export class UserController {
     meInfo(@Req() req: Request) {
         return this.userService.findOneUser(req['user']['userId']);
     }
-    
+
 
     @UseGuards(JwtAuthGuard)
     @ApiConsumes('multipart/form-data')
@@ -61,18 +61,18 @@ export class UserController {
                     items: {
                         type: 'string',
                         format: 'binary',
-                    }, 
+                    },
                 },
             },
         },
     })
     // 4- carga de imagen documento de identidad. (falta apartar por lados)
-    @UseInterceptors(FilesInterceptor('files'))
+    @UseInterceptors(AnyFilesInterceptor())
     @Post('/documents')
     createDocument(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
         return this.docService.createDocument(files, req['user']['userId'], type['type']);
     }
-    
+
     // 5- guardar una direccion de un usuario.
     @UseGuards(JwtAuthGuard)
     @Post('/address')

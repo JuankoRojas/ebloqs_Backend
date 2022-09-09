@@ -7,21 +7,21 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Documents {
+export class Transactions {
     @PrimaryColumn()
     id: string;
 
-    @Column({ type: 'varchar', nullable: false })
+    @Column({ type: 'varchar', nullable: true })
+    customer: string;
+
+    @Column({ type: 'varchar', nullable: true })
+    receiver: string;
+
+    @Column({ type: 'varchar', nullable: true })
+    amount: string;
+
+    @Column({ type: 'varchar', nullable: true })
     type: string;
-
-    @Column({ array: false, type: 'varchar', })
-    documentURL: string[];
-
-    @Column({ type: 'varchar', nullable: true })
-    ownerID: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    side: string;
 
     @CreateDateColumn({
         type: 'timestamp',

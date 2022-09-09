@@ -16,6 +16,7 @@ import { Address } from './entities/address.entity';
 import { UserEnt } from './entities/user.entity';
 import { Documents } from './entities/document.entity';
 import { PersonalInfo } from './entities/personal_info.entity';
+import { Transactions } from '../transactions/entitys/transactions.entity';
 
 @Global()
 @Module({
@@ -26,7 +27,7 @@ import { PersonalInfo } from './entities/personal_info.entity';
     //     PersonalInfoRepository,
     //     UserEntRepository,
     // ]),
-        TypeOrmModule.forFeature([Address, UserEnt, Documents, PersonalInfo], 'mysqlDB')
+        TypeOrmModule.forFeature([Address, UserEnt, Documents, PersonalInfo, Transactions], 'mysqlDB')
     ],
     controllers: [UserController, ClientsController],
     providers: [UserService, AddressService, DocumentsService, Storages3Service],

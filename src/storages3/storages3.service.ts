@@ -6,13 +6,25 @@ import { S3 } from 'aws-sdk';
 export class Storages3Service {
     async createFileDocument(file: Express.Multer.File): Promise<string> {
         try {
-            const urlKey = `document/front/${file.originalname}`;
-            const params = {
-                Body: file.buffer,
-                Bucket: process.env.AWS_BUCKET_NAME,
-                Key: urlKey,
-            };
-            return this.uploadFile(params);
+            if (file.fieldname == "front") {
+                const urlKey = `document/front/${file.originalname}`;
+                const params = {
+                    Body: file.buffer,
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: urlKey,
+                };
+                return this.uploadFile(params);
+            }
+            if (file.fieldname == "rever") {
+                const urlKey = `document/rever/${file.originalname}`;
+                const params = {
+                    Body: file.buffer,
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: urlKey,
+                };
+                return this.uploadFile(params);
+            }
+
         } catch (error) {
             throw new HttpException(`Error al crear el documento: ${error}`, 351)
         }

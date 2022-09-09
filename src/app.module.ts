@@ -11,6 +11,7 @@ import { EmailsModule } from './emails/emails.module';
 import { WalletModule } from './wallet/wallet.module';
 import { Storages3Module } from './storages3/storages3.module';
 import { LoggerModule } from 'nestjs-pino';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { LoggerModule } from 'nestjs-pino';
         EmailsModule,
         WalletModule,
         Storages3Module,
+        TransactionsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

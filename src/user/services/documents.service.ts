@@ -9,32 +9,70 @@ import { Documents } from '../entities/document.entity';
 export class DocumentsService {
     constructor(
         @InjectRepository(Documents, 'mysqlDB') private docRepo: Repository<Documents>,
-            private readonly storageService: Storages3Service,
-        ) {}
+        private readonly storageService: Storages3Service,
+    ) { }
 
 
     async createDocument(files: Array<Express.Multer.File>, userID: string, type: string) {
-        let urls = await  this.upLoadsDocuments(files);
-        
-        const newDocument = <Documents> <unknown>{
-            id: uuidv4(),
-            type: type,
-            documentURL: urls,
-            ownerID: userID,
-        };
+        try {
+            let documents = []
+            files.forEach(async (file: any) => {
+                if (file.fieldname == "front") {
+                    //let urls = await this.upLoadsDocuments(files);
+                    const newDocument = <Documents><unknown>{
+                        id: uuidv4(),
+                        type: type,
+                        documentURL: this.storageService.createFileDocument(file),
+                        ownerID: userID,
+                        side: 'front'
+                    };
+                    const cDocument = this.docRepo.create(newDocument);
+                    await this.docRepo.save(cDocument);
+                    documents.push(cDocument);
+                }
+                if (file.fieldname == "rever") {
+                    //let urls = await this.upLoadsDocuments(files);
+                    const newDocument = <Documents><unknown>{
+                        id: uuidv4(),
+                        type: type,
+                        documentURL: this.storageService.createFileDocument(file),
+                        ownerID: userID,
+                        side: 'rever'
+                    };
+                    console.log(newDocument)
+                    const cDocument = this.docRepo.create(newDocument);
+                    await this.docRepo.save(cDocument);
+                    documents.push(cDocument);
+                }
+            })
+            let res = { message: "documentos cargados", userID: userID }
+            return res;
+        } catch (e: any) {
+            console.log(e.message);
+        }
 
-        const cDocument = this.docRepo.create(newDocument);
-        return await this.docRepo.save(cDocument);
+        /* let urls = await  this.upLoadsDocuments(files);
+       const newDocument = <Documents> <unknown>{
+           id: uuidv4(),
+           type: type,
+           documentURL: urls,
+           ownerID: userID,
+           side : "front"
+       };
+
+       const cDocument = this.docRepo.create(newDocument);
+       return await this.docRepo.save(cDocument);  */
     }
 
 
     async upLoadsDocuments(files: Array<Express.Multer.File>): Promise<string[]> {
         let urlsFIles = [];
         for await (const fileUrs of files) {
-            const url =  await this.storageService.createFileDocument(fileUrs)
+            const url = await this.storageService.createFileDocument(fileUrs)
             urlsFIles = [...urlsFIles, url];
 
-            if(urlsFIles.length == files.length) {
+            if (urlsFIles.length == files.length) {
+                console.log(urlsFIles)
                 return urlsFIles;
             }
         }
