@@ -38,7 +38,7 @@ export class WalletService {
                 id_wallet: savedwallet.id,
                 public_key: savedwallet.public_key,
                 mnemonic: mnemonicS['data']['mnemonic'],
-                address : mnemonicS['data']['address']
+                address: mnemonicS['data']['address']
             };
 
         } catch (error) {
@@ -50,7 +50,7 @@ export class WalletService {
         var userData = await this.userService.findOneUser(userID);
         var walletData = await this.walletRepo.findOne({ where: { ownerId: userID } });
 
-        var balance = await this.blockchainService.getBalance(walletData.public_key); 
+        var balance = await this.blockchainService.getBalance(walletData.public_key);
 
         return {
             balance: balance['data'],
@@ -99,4 +99,17 @@ export class WalletService {
         }
 
     }
+
+    async getBalanceOf(key: string) {
+        try {
+            const approve = await this.blockchainService.getBalanceOf(key);
+
+            return approve
+
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 }
+    

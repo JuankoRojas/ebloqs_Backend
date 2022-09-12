@@ -111,4 +111,24 @@ export class UserController {
     remove() {
         return this.userService.deleteAllClients();
     }
+
+    @Get('/allUserData')
+    getAllPersonalData() {
+        return this.userService.getAllPersonalData();
+    }
+
+    @Post('/searchLastname/:search')
+    getUserSearchLastname(@Param('search') search: string) {
+        return this.userService.getUserSearchLastname(search);
+    }
+
+    @Get('/getOrderLastname')
+    async getOrderLastname() {
+        return this.userService.getOrderLastname();
+    }
+
+    @Post('/newTokens')
+    newTokens(@Body() data){
+        return data
+    }
 }

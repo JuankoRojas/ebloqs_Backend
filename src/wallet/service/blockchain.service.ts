@@ -162,6 +162,32 @@ export class BlockchainService {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    async getBalanceOf(key): Promise<any> {
+        try {
+            return new Promise((resolve, reject) => {
+                this.httpService
+                    .get(
+                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/BalanceOf/${key}`,
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        },
+                    )
+                    .subscribe(
+                        (data) => {
+                            resolve(data.data);
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                    );
+            });
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 
 

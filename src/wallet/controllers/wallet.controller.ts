@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/jwt.auth.guard';
 import { CreateWalletDto } from '../dto/wallet.dto';
@@ -43,5 +43,13 @@ export class WalletController {
   @Post('/totalSupply')
   getTotalSupply() {
     return this.walletService.getTotalSupply();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/balanceOf/:key')
+  getBalanceOf(@Param('key') key: any) {
+  
+    
+    return this.walletService.getBalanceOf(key);
   }
 }

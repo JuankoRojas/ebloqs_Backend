@@ -15,12 +15,14 @@ import { UpdatePersonalDataDto } from './dto/personal_data.dto';
 import { UserEntRepository } from './repository/user.repository';
 import { PersonalInfoRepository } from './repository/personalinfo.repository';
 
+
+
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEnt, 'mysqlDB') private userRepo: UserEntRepository,
         @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: PersonalInfoRepository,
-        private emailService: EmailsService,
+        private emailService: EmailsService
     ) { }
 
     async create(createUserDto: CreateUserDto) {
@@ -159,12 +161,112 @@ export class UserService {
     }
 
     async updatePersonalData(userID: string, data: UpdatePersonalDataDto) {
+        console.log(data)
         const newData = await this.personalInfoRepo.create(data);
         newData.id = uuidv4();
         newData.ownerID = userID;
 
         return await this.personalInfoRepo.save(newData);
     }
+
+    async getAllPersonalData() {
+        var listClients = await this.personalInfoRepo.findBy({})
+
+
+        var listUsers = listClients.map(v => {
+            return {
+                id: v.id,
+                name: v.name,
+                lastname: v.lastname,
+                ownerID: v.ownerID,
+                birthdayDate: v.birthdayDate,
+                nacionality: v.nacionality,
+                phoneNumber: v.phoneNumber,
+                dniNumber: v.dniNumber,
+            };
+        })
+
+        return listUsers;
+    }
+
+    async getUserSearchLastname(text: string) {
+        const uusers = this.personalInfoRepo.find();
+
+        const filters = (await uusers).filter(u => {
+            return u.lastname.startsWith(text);
+        })
+
+        var listLastnames = filters.map((v) => {
+            return v.lastname[0];
+        })
+
+        var listUsers = filters.map(v => {
+            return {
+                id: v.id,
+                name: v.name,
+                lastname: v.lastname,
+                ownerID: v.ownerID,
+                birthdayDate: v.birthdayDate,
+                nacionality: v.nacionality,
+                phoneNumber: v.phoneNumber,
+                dniNumber: v.dniNumber,
+            };
+        })
+        var titleWithOutDuplicate = listLastnames.sort().filter((value, index) => {
+            return listLastnames.indexOf(value) === index;
+        })
+
+        var listCostumers = titleWithOutDuplicate.map((c) => {
+            let data = {
+                title: c,
+                lastname: listUsers.filter((r) => r.lastname[0] === c)
+            }
+
+            return data;
+        })
+
+        return listCostumers
+    }
+
+    async getOrderLastname() {
+        var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        var orderLastnames = []
+        for (const letter of letters) {
+            const uusers = this.personalInfoRepo.find();
+            const filters = (await uusers).filter(u => {
+                return u.lastname.startsWith(letter);
+            })
+            var listLastnames = filters.map((v) => {
+                return v.lastname[0];
+            })
+            var listUsers = filters.map(v => {
+                return {
+                    id: v.id,
+                    name: v.name,
+                    lastname: v.lastname,
+                    ownerID: v.ownerID,
+                    birthdayDate: v.birthdayDate,
+                    nacionality: v.nacionality,
+                    phoneNumber: v.phoneNumber,
+                    dniNumber: v.dniNumber,
+                };
+            })
+            var titleWithOutDuplicate = listLastnames.sort().filter((value, index) => {
+                return listLastnames.indexOf(value) === index;
+            })
+
+            var listCostumers = titleWithOutDuplicate.map((c) => {
+                let data = {
+                    title: c,
+                    lastnames: listUsers.filter((r) => r.lastname[0] === c)
+                }
+                return data;
+            })
+            if (listCostumers[0] != undefined && listCostumers.length > 0) orderLastnames.push(listCostumers[0]); else null
+        }
+        return orderLastnames;
+    }
+
 
 }
 
@@ -196,3 +298,4 @@ function randomTwoCharacters(array) {
         return idvalue.toString()
     }
 }
+
