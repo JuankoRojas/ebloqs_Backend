@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { forwardRef, Global, Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './controllers/user.controller';
 import { ClientsController } from './controllers/clients.controller';
@@ -17,20 +17,18 @@ import { UserEnt } from './entities/user.entity';
 import { Documents } from './entities/document.entity';
 import { PersonalInfo } from './entities/personal_info.entity';
 import { Transactions } from '../transactions/entitys/transactions.entity';
+import { BlockchainService } from '../wallet/service/blockchain.service';
+import { WalletService } from '../wallet/service/wallet.service';
+import { Wallet } from '../wallet/entitys/wallet.entity';
+import { WalletModule } from '../wallet/wallet.module'
 
 @Global()
 @Module({
     imports: [
-    //     TypeOrmExModule.forCustomRepository([
-    //     AddressRepository,
-    //     DocumentsRepository,
-    //     PersonalInfoRepository,
-    //     UserEntRepository,
-    // ]),
-        TypeOrmModule.forFeature([Address, UserEnt, Documents, PersonalInfo, Transactions], 'mysqlDB')
+        TypeOrmModule.forFeature([Address, UserEnt, Documents, PersonalInfo, Transactions, Wallet], 'mysqlDB')
     ],
     controllers: [UserController, ClientsController],
     providers: [UserService, AddressService, DocumentsService, Storages3Service],
     exports: [UserService],
 })
-export class UserModule {}
+export class UserModule { }

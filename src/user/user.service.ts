@@ -14,7 +14,10 @@ import { PersonalInfo } from './entities/personal_info.entity';
 import { UpdatePersonalDataDto } from './dto/personal_data.dto';
 import { UserEntRepository } from './repository/user.repository';
 import { PersonalInfoRepository } from './repository/personalinfo.repository';
-
+import { WalletService } from '../wallet/service/wallet.service';
+import { Wallet } from '../wallet/entitys/wallet.entity';
+import { Address } from './entities/address.entity';
+import { BlockchainService } from '../wallet/service/blockchain.service';
 
 
 @Injectable()
@@ -22,7 +25,11 @@ export class UserService {
     constructor(
         @InjectRepository(UserEnt, 'mysqlDB') private userRepo: UserEntRepository,
         @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: PersonalInfoRepository,
-        private emailService: EmailsService
+        @InjectRepository(Wallet, 'mysqlDB') private walletRepo: Repository<Wallet>,
+        @InjectRepository(Address, 'mysqlDB') private addressRepo: Repository<Address>,
+        private emailService: EmailsService,
+        private readonly blockchainService: BlockchainService,
+
     ) { }
 
     async create(createUserDto: CreateUserDto) {
@@ -122,21 +129,27 @@ export class UserService {
     }
 
     async getSearchClient(text: string) {
-        const uusers = this.userRepo.find();
-
-        const filters = (await uusers).filter(u => {
-            return u.name.startsWith(text);
+        console.log(text)
+        const uusers = await this.personalInfoRepo.find();
+        const filters = (uusers).filter(u => {
+            return u.lastname.toLocaleLowerCase().startsWith(text.toLocaleLowerCase());
         })
+        console.log(filters)
 
         var listTitleName = filters.map((v) => {
-            return v.name[0];
+            return v.lastname[0];
         })
 
         var listNames = filters.map(v => {
             return {
                 id: v.id,
                 name: v.name,
-                email: v.email,
+                lastname: v.lastname,
+                ownerID: v.ownerID,
+                birthdayDate: v.birthdayDate,
+                nacionality: v.nacionality,
+                phoneNumber: v.phoneNumber,
+                dniNumber: v.dniNumber,
             };
         })
 
@@ -147,7 +160,7 @@ export class UserService {
         var listCostumers = titleWithOutDuplicate.map((c) => {
             let data = {
                 title: c,
-                names: listNames.filter((r) => r.name[0] === c)
+                names: listNames.filter((r) => r.lastname[0] === c)
             }
 
             return data;
@@ -161,12 +174,31 @@ export class UserService {
     }
 
     async updatePersonalData(userID: string, data: UpdatePersonalDataDto) {
-        console.log(data)
-        const newData = await this.personalInfoRepo.create(data);
-        newData.id = uuidv4();
-        newData.ownerID = userID;
 
-        return await this.personalInfoRepo.save(newData);
+        let payload = {
+            name: data.name.toLocaleLowerCase(),
+            lastname: data.lastname.toLocaleLowerCase(),
+            birthdayDate: data.birthdayDate,
+            nacionality: data.nacionality.toLocaleLowerCase(),
+            phoneNumber: data.phoneNumber,
+            dniNumber: data.dniNumber
+        }
+
+        const verify = await this.personalInfoRepo.findOneBy({ ownerID: userID });
+
+        if (verify) {
+            const newData = await this.personalInfoRepo.update({ ownerID: userID }, payload);
+            return { message: "user Updated", payload }
+        } else {
+            const newData = this.personalInfoRepo.create(payload);
+            newData.id = uuidv4();
+            newData.ownerID = userID;
+
+            return await this.personalInfoRepo.save(newData);
+        }
+
+
+
     }
 
     async getAllPersonalData() {
@@ -234,7 +266,7 @@ export class UserService {
         for (const letter of letters) {
             const uusers = this.personalInfoRepo.find();
             const filters = (await uusers).filter(u => {
-                return u.lastname.startsWith(letter);
+                return u.lastname.toLowerCase().startsWith(letter.toLowerCase());
             })
             var listLastnames = filters.map((v) => {
                 return v.lastname[0];
@@ -258,7 +290,7 @@ export class UserService {
             var listCostumers = titleWithOutDuplicate.map((c) => {
                 let data = {
                     title: c,
-                    lastnames: listUsers.filter((r) => r.lastname[0] === c)
+                    lastnames: listUsers.filter((r) => r.lastname[0].toLowerCase() === c.toLowerCase())
                 }
                 return data;
             })
@@ -267,6 +299,22 @@ export class UserService {
         return orderLastnames;
     }
 
+
+    async dataOfUser(id: string) {
+        try {
+            const personalData = await this.personalInfoRepo.findOneBy({ ownerID: id });
+            const primaryData = await this.userRepo.findBy({ id: id })
+            const walletData = await this.walletRepo.findOne({ where: { ownerId: id } });
+            const addressData = await this.addressRepo.findOne({ where: { ownerID: id } })
+            let key = walletData.public_key
+            const balanceData = await this.blockchainService.getBalanceOf(key)
+            let fullData = { personalData, primaryData, walletData, addressData, balanceData }
+            if (personalData) return fullData; else return { message: `User with id : ${id} not found.` }
+        } catch (e: any) {
+            return e.message
+        }
+
+    }
 
 }
 

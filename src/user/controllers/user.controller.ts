@@ -127,8 +127,13 @@ export class UserController {
         return this.userService.getOrderLastname();
     }
 
+    @Get('dataOfUser/:uid')
+     dataOfUser(@Param('uid') uid: string) {
+        return this.userService.dataOfUser(uid);
+    }
+
     @Post('/newTokens')
-    newTokens(@Body() data){
+    newTokens(@Body() data) {
         return data
     }
 }

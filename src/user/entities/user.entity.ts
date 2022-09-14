@@ -17,20 +17,11 @@ export class UserEnt {
     @Column({ type: 'varchar' })
     email: string;
 
-    @Column({ type: 'varchar', nullable: true })
-    phone: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    nacionality: string;
-
     @CreateDateColumn({
         type: 'timestamp',
         nullable: true,
     })
     birthdayDate: Date;
-
-    @Column({ type: 'varchar', nullable: true })
-    dni: string;
 
     @Column({ type: 'text', nullable: true })
     typeAcount: string;
