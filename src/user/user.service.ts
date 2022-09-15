@@ -18,6 +18,7 @@ import { WalletService } from '../wallet/service/wallet.service';
 import { Wallet } from '../wallet/entitys/wallet.entity';
 import { Address } from './entities/address.entity';
 import { BlockchainService } from '../wallet/service/blockchain.service';
+import { Documents } from './entities/document.entity';
 
 
 @Injectable()
@@ -27,6 +28,7 @@ export class UserService {
         @InjectRepository(PersonalInfo, 'mysqlDB') private personalInfoRepo: PersonalInfoRepository,
         @InjectRepository(Wallet, 'mysqlDB') private walletRepo: Repository<Wallet>,
         @InjectRepository(Address, 'mysqlDB') private addressRepo: Repository<Address>,
+        @InjectRepository(Documents, 'mysqlDB') private documentRepo: Repository<Documents>,
         private emailService: EmailsService,
         private readonly blockchainService: BlockchainService,
 
@@ -306,14 +308,31 @@ export class UserService {
             const primaryData = await this.userRepo.findBy({ id: id })
             const walletData = await this.walletRepo.findOne({ where: { ownerId: id } });
             const addressData = await this.addressRepo.findOne({ where: { ownerID: id } })
+            const documentData = await this.documentRepo.find({ where: { ownerID: id } });
             let key = walletData.public_key
             const balanceData = await this.blockchainService.getBalanceOf(key)
-            let fullData = { personalData, primaryData, walletData, addressData, balanceData }
+            let fullData = { personalData, primaryData, walletData, addressData, balanceData, documentData }
             if (personalData) return fullData; else return { message: `User with id : ${id} not found.` }
         } catch (e: any) {
             return e.message
         }
 
+    }
+
+    async setStatus(id: string, status: boolean) {
+        try {
+            if (status == true) {
+                const newData = await this.userRepo.update({ id: id }, { status: status });
+                return { status: status, message: `Usuario : ${id} activo.` }
+            } else {
+                const newData = await this.userRepo.update({ id: id }, { status: status });
+                return { status: status, message: `Usuario : ${id} inactivo.` }
+            }
+
+
+        } catch (e: any) {
+
+        }
     }
 
 }

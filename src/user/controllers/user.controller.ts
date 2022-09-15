@@ -25,6 +25,7 @@ import { DocumentsService } from '../services/documents.service';
 import { AddressService } from '../services/address.service';
 import { CreateAddressDto } from '../dto/create_addres.dto';
 import { UpdatePersonalDataDto } from '../dto/personal_data.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @ApiTags('user')
 @Controller('user')
@@ -106,34 +107,45 @@ export class UserController {
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+id, updateUserDto);
     }
-
+    
     @Delete('allclients')
     remove() {
         return this.userService.deleteAllClients();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('/allUserData')
     getAllPersonalData() {
         return this.userService.getAllPersonalData();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('/searchLastname/:search')
     getUserSearchLastname(@Param('search') search: string) {
         return this.userService.getUserSearchLastname(search);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('/getOrderLastname')
     async getOrderLastname() {
         return this.userService.getOrderLastname();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('dataOfUser/:uid')
-     dataOfUser(@Param('uid') uid: string) {
+    dataOfUser(@Param('uid') uid: string) {
         return this.userService.dataOfUser(uid);
     }
 
     @Post('/newTokens')
     newTokens(@Body() data) {
+        console.log()
         return data
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/status')
+    setStatus(@Body() data) {
+        return this.userService.setStatus(data.id, data.status);
     }
 }

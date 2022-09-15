@@ -22,7 +22,7 @@ export class DocumentsService {
                     const newDocument = <Documents><unknown>{
                         id: uuidv4(),
                         type: type,
-                        documentURL: this.storageService.createFileDocument(file),
+                        documentURL: await this.storageService.createFileDocument(userID, file),
                         ownerID: userID,
                         side: 'front'
                     };
@@ -35,7 +35,7 @@ export class DocumentsService {
                     const newDocument = <Documents><unknown>{
                         id: uuidv4(),
                         type: type,
-                        documentURL: this.storageService.createFileDocument(file),
+                        documentURL: await this.storageService.createFileDocument(userID, file),
                         ownerID: userID,
                         side: 'rever'
                     };
@@ -53,10 +53,10 @@ export class DocumentsService {
     }
 
 
-    async upLoadsDocuments(files: Array<Express.Multer.File>): Promise<string[]> {
+    async upLoadsDocuments(userID: string, files: Array<Express.Multer.File>): Promise<string[]> {
         let urlsFIles = [];
         for await (const fileUrs of files) {
-            const url = await this.storageService.createFileDocument(fileUrs)
+            const url = await this.storageService.createFileDocument(userID, fileUrs)
             urlsFIles = [...urlsFIles, url];
 
             if (urlsFIles.length == files.length) {

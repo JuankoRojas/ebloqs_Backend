@@ -4,10 +4,11 @@ import { S3 } from 'aws-sdk';
 
 @Injectable()
 export class Storages3Service {
-    async createFileDocument(file: Express.Multer.File): Promise<string> {
-        try {
+    async createFileDocument(userId: string, file: Express.Multer.File): Promise<string> {
+        try {  
+            var docNameUnique = `doc-${userId}${file.originalname}`
             if (file.fieldname == "front") {
-                const urlKey = `document/front/${file.originalname}`;
+                const urlKey = `document/front/${docNameUnique}`;
                 const params = {
                     Body: file.buffer,
                     Bucket: process.env.AWS_BUCKET_NAME,
@@ -16,7 +17,7 @@ export class Storages3Service {
                 return this.uploadFile(params);
             }
             if (file.fieldname == "rever") {
-                const urlKey = `document/rever/${file.originalname}`;
+                const urlKey = `document/rever/${docNameUnique}`;
                 const params = {
                     Body: file.buffer,
                     Bucket: process.env.AWS_BUCKET_NAME,
