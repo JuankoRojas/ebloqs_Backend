@@ -12,6 +12,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { Storages3Module } from './storages3/storages3.module';
 import { LoggerModule } from 'nestjs-pino';
 import { TransactionsModule } from './transactions/transactions.module';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { TransactionsModule } from './transactions/transactions.module';
         EmailsModule,
         Storages3Module,
         TransactionsModule,
+        TokensModule,
     ],
     controllers: [AppController],
     providers: [AppService],
