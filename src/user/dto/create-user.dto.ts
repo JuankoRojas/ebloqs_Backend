@@ -16,5 +16,5 @@ export class CreateUserDto {
 
     @IsString()
     @ApiProperty()
-    readonly type_acount: string;
+    readonly type_account: string;
 }

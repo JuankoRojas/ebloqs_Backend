@@ -36,12 +36,12 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto) {
         try {
-            console.log(createUserDto.type_acount)
+            console.log(createUserDto.type_account)
             const user = <UserEnt>{
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
                 deviceID: [createUserDto.deviceID],
-                typeAcount: `${createUserDto.type_acount}`,
+                typeAccount: `${createUserDto.type_account}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: "",
                 idRef: randomCode(),
@@ -49,14 +49,16 @@ export class UserService {
                 create: new Date(),
                 update: new Date(),
             };
+
             console.log(user)
             const newUser = await this.userRepo.save(user);
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            if (newUser.typeAcount == 'email') {
+            if (newUser.typeAccount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
-            return newUser;
+            return newUser; 
+           
         } catch (e) {
             throw new HttpException(e, 500)
         }

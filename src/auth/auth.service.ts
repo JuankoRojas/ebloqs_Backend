@@ -48,15 +48,15 @@ export class AuthService {
         if (user) {
             const isMatch = user.deviceID.indexOf(deviceID);
             return user
-           /* if (isMatch != -1) {
-                return user;
-            } else {
-                throw new UnauthorizedException('Device unauthorized');
-            }  */
+            /* if (isMatch != -1) {
+                 return user;
+             } else {
+                 throw new UnauthorizedException('Device unauthorized');
+             }  */
         } else {
             throw new UnauthorizedException('User not found');
         }
-        
+
     }
     //1- login
     async login(user: any) {
@@ -68,16 +68,24 @@ export class AuthService {
     }
     // 2- registro de usuarios
     async registerUser(userData: CreateUserDto) {
-        console.log(userData);
         try {
-            const userRegister = await this.usersService.create(userData);
-            const payload = {
-                userid: userRegister.id,
-                deviceID: userRegister.deviceID,
-            };
-            return {
-                access_token: this.jwtService.sign(payload),
-            };
+            const user = await this.usersService.findByEmail(userData.email);
+            if (user) {
+                return {
+                    ok: false,
+                    messagge: `Esta email ya se encuentra registrado a una cuenta.`
+                }
+            } else {
+                const userRegister = await this.usersService.create(userData);
+                const payload = {
+                    userid: userRegister.id,
+                    deviceID: userRegister.deviceID,
+                };
+                return {
+                    access_token: this.jwtService.sign(payload),
+                };
+            }
+
         } catch (error) {
             throw new UnauthorizedException(error.message);
         }

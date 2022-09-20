@@ -24,7 +24,7 @@ export class UserEnt {
     birthdayDate: Date;
 
     @Column({ type: 'text', nullable: true })
-    typeAcount: string;
+    typeAccount: string;
 
     @Column({ array: false, type: 'varchar' })
     deviceID: string[];
