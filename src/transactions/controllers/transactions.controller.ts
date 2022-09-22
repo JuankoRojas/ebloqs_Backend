@@ -23,11 +23,20 @@ import { TransactionsService } from '../services/transactions.service';
 @ApiTags('transactions')
 @Controller('transactions')
 export class TransactionsController {
-    constructor( private readonly transactionsService: TransactionsService,
-    ) {  }
+    constructor(private readonly transactionsService: TransactionsService,
+    ) { }
     @Post('/new')
     create(@Body() createTransactionDto: CreateTrasactionDto) {
         return this.transactionsService.create(createTransactionDto);
     }
 
+    @Get("/getAll")
+    getAllTransactions() {
+        return this.transactionsService.getAllTransactions();
+    }
+
+    @Post("/status")
+    updateStatus(@Body() payload: any) {
+        return this.transactionsService.updateStatusTransactionsBank(payload.id, payload.status)
+    }
 }

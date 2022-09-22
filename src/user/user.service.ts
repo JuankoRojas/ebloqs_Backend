@@ -36,7 +36,6 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto) {
         try {
-            console.log(createUserDto.type_account)
             const user = <UserEnt>{
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
@@ -50,7 +49,6 @@ export class UserService {
                 update: new Date(),
             };
 
-            console.log(user)
             const newUser = await this.userRepo.save(user);
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
@@ -92,7 +90,6 @@ export class UserService {
     async validateEmailUser(code: string) {
         console.log(code)
         let vuser = await this.findOneUser(code);
-
         if (vuser.emailVerificated) {
             throw new UnauthorizedException('Este código ya caducó')
         } else {
