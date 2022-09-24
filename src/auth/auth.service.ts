@@ -46,13 +46,11 @@ export class AuthService {
     async validateUser(email: string, deviceID: string): Promise<UserEnt> {
         const user = await this.usersService.findByEmail(email);
         if (user) {
-            const isMatch = user.deviceID.indexOf(deviceID);
-            return user
-            /* if (isMatch != -1) {
-                 return user;
-             } else {
-                 throw new UnauthorizedException('Device unauthorized');
-             }  */
+            if (user.deviceID == deviceID) {
+                return user;
+            } else {
+                throw new UnauthorizedException('Device unauthorized');
+            }
         } else {
             throw new UnauthorizedException('User not found');
         }
@@ -61,7 +59,7 @@ export class AuthService {
     //1- login
     async login(user: any) {
         const validUser = await this.validateUser(user.email, user.deviceID);
-        const payload = { userid: validUser.id, deviceID: validUser.deviceID };
+        const payload = { userid: validUser.id, deviceID: validUser.deviceID, username: validUser.name };
         return {
             access_token: this.jwtService.sign(payload),
         };

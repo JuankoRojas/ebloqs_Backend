@@ -27,7 +27,7 @@ export class UserEnt {
     typeAccount: string;
 
     @Column({ array: false, type: 'varchar' })
-    deviceID: string[];
+    deviceID: string;
 
     @Column({ type: 'bool', nullable: true })
     emailVerificated: boolean;
@@ -42,7 +42,7 @@ export class UserEnt {
     status: boolean;
 
     @Column({ type: 'varchar', nullable: true })
-    verify: string;
+    verify: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',

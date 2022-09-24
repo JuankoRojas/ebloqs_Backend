@@ -19,6 +19,7 @@ import { Wallet } from '../wallet/entitys/wallet.entity';
 import { Address } from './entities/address.entity';
 import { BlockchainService } from '../wallet/service/blockchain.service';
 import { Documents } from './entities/document.entity';
+import { UserModel } from 'src/models/users/user.model';
 
 
 @Injectable()
@@ -39,7 +40,7 @@ export class UserService {
             const user = <UserEnt>{
                 id: uuidv4(),
                 email: createUserDto.email.toLowerCase(),
-                deviceID: [createUserDto.deviceID],
+                deviceID: createUserDto.deviceID,
                 typeAccount: `${createUserDto.type_account}`,
                 name: `${createUserDto.name.toLowerCase()}`,
                 password: "",
@@ -55,19 +56,54 @@ export class UserService {
             if (newUser.typeAccount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
             }
-            return newUser; 
-           
+            return newUser;
+
         } catch (e) {
             throw new HttpException(e, 500)
         }
     }
 
     findByEmail(email: string) {
-        return this.userRepo.findOne({ where: { email } });
+        return this.userRepo.findOneBy({ email: email });
     }
 
-    findOneUser(id: string) {
-        return this.userRepo.findOne({ where: { id } });
+    async findOneUser(id: string) {
+        try {
+            console.log(id)
+            const primaryData = await this.userRepo.findOneBy({ id: id })
+            const personalData = await this.personalInfoRepo.findOneBy({ ownerID: id })
+            const addressData = await this.addressRepo.findOneBy({ ownerID: id })
+            
+            let meData = <UserModel>{
+                id: primaryData.id,
+                name: personalData.name,
+                lastName: personalData.lastname,
+                email: primaryData.email,
+                birthdayDate: personalData.birthdayDate,
+                typeAccount: primaryData.typeAccount,
+                deviceID: primaryData.deviceID,
+                emailVerificated: primaryData.emailVerificated,
+                password: primaryData.password,
+                idRef: primaryData.idRef,
+                status: primaryData.status,
+                verify: primaryData?.verify || "",
+                create: primaryData.create,
+                update: primaryData.update,
+                nationality: personalData?.nationality || "",
+                phone: personalData.phoneNumber,
+                DniNumber: personalData.dniNumber,
+                zipCode: addressData?.postalCode || "",
+                city: addressData?.city || "",
+                address: addressData?.address1 || "",
+                avatar: ""
+            }
+
+            return meData;
+
+        } catch (e: any) {
+            throw new HttpException(e.message, 500)
+        }
+
     }
 
     update(id: number, updateUserDto: UpdateUserDto) {
@@ -148,7 +184,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nacionality,
+                nacionality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -180,7 +216,7 @@ export class UserService {
             name: data.name.toLocaleLowerCase(),
             lastname: data.lastname.toLocaleLowerCase(),
             birthdayDate: data.birthdayDate,
-            nacionality: data.nacionality.toLocaleLowerCase(),
+            nationality: data.nationality.toLocaleLowerCase(),
             phoneNumber: data.phoneNumber,
             dniNumber: data.dniNumber
         }
@@ -213,7 +249,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nacionality,
+                nacionality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -240,7 +276,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nacionality,
+                nacionality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -279,7 +315,7 @@ export class UserService {
                     lastname: v.lastname,
                     ownerID: v.ownerID,
                     birthdayDate: v.birthdayDate,
-                    nacionality: v.nacionality,
+                    nacionality: v.nationality,
                     phoneNumber: v.phoneNumber,
                     dniNumber: v.dniNumber,
                 };

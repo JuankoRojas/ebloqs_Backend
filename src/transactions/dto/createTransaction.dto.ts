@@ -24,5 +24,5 @@ export class CreateTrasactionDto {
 
     @IsString()
     @ApiProperty()
-    readonly status: string;  
+    readonly status: number;  
 }

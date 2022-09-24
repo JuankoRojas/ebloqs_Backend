@@ -42,16 +42,16 @@ export class TransactionsService {
             const message = `Transaction # ${id} updated.`
             switch (status) {
                 case 0: {
-                    const transaction = await this.transactionsRepo.update({ id: id }, { status: "pending" })
+                    const transaction = await this.transactionsRepo.update({ id: id }, { status: 0 })
                     return { ok: true, message }
                 }
                 case 1: {
-                    const transaction = await this.transactionsRepo.update({ id: id }, { status: "pay out" })
+                    const transaction = await this.transactionsRepo.update({ id: id }, { status: 1 })
 
                     return { ok: true, message }
                 }
                 case 2: {
-                    const transaction = await this.transactionsRepo.update({ id: id }, { status: "not payed" })
+                    const transaction = await this.transactionsRepo.update({ id: id }, { status: 2 })
                     return { ok: true, message }
                 }
             }

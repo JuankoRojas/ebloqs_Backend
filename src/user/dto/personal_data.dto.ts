@@ -17,7 +17,7 @@ export class UpdatePersonalDataDto {
 
     @IsString()
     @ApiProperty()
-    readonly nacionality: string;
+    readonly nationality: string;
 
     @IsString()
     @ApiProperty()

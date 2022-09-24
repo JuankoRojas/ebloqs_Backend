@@ -98,11 +98,13 @@ export class UserController {
         return this.userService.recoveryUser(code);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('all')
     findOne(@Param('id') id: string) {
         return this.userService.getAllUsers();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+id, updateUserDto);
@@ -135,12 +137,6 @@ export class UserController {
     @Get('dataOfUser/:uid')
     dataOfUser(@Param('uid') uid: string) {
         return this.userService.dataOfUser(uid);
-    }
-
-    @Post('/newTokens')
-    newTokens(@Body() data) {
-        console.log()
-        return data
     }
 
     @UseGuards(JwtAuthGuard)

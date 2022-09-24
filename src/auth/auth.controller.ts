@@ -12,7 +12,7 @@ export class AuthController {
     // 2- login usuarios
     @UseGuards(AuthGuard('local'))
     @Post('/login')
-    async login(@Req() payload: Request) {
+    login(@Body() payload) {
         return this.authService.login(payload);
     }
 

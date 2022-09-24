@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_USERNAME=admin
+      - MYSQL_ROOT_PASSWORD=S*k31MzOVP6k
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../post_data:/var/lib/mysql
+
+  myapp:
+    container_name: myapp
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../:usr/src/app
+      - /usr/src/app/node_modules
+    ports: 
+      - 3000:3000
+      - 9229:9229

@@ -24,7 +24,7 @@ export class PersonalInfo {
     birthdayDate: string;
 
     @Column({ type: 'varchar', nullable: true })
-    nacionality: string;
+    nationality: string;
 
     @Column({ type: 'varchar', nullable: true })
     phoneNumber: string;
