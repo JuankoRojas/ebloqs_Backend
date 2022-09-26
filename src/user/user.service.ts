@@ -53,9 +53,9 @@ export class UserService {
             const newUser = await this.userRepo.save(user);
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            if (newUser.typeAccount == 'email') {
+            /* if (newUser.typeAccount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
-            }
+            } */
             return newUser;
 
         } catch (e) {
@@ -69,11 +69,10 @@ export class UserService {
 
     async findOneUser(id: string) {
         try {
-            console.log(id)
             const primaryData = await this.userRepo.findOneBy({ id: id })
             const personalData = await this.personalInfoRepo.findOneBy({ ownerID: id })
             const addressData = await this.addressRepo.findOneBy({ ownerID: id })
-            
+
             let meData = <UserModel>{
                 id: primaryData.id,
                 name: personalData.name,
@@ -184,7 +183,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nationality,
+                nationality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -249,7 +248,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nationality,
+                nationality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -276,7 +275,7 @@ export class UserService {
                 lastname: v.lastname,
                 ownerID: v.ownerID,
                 birthdayDate: v.birthdayDate,
-                nacionality: v.nationality,
+                nationality: v.nationality,
                 phoneNumber: v.phoneNumber,
                 dniNumber: v.dniNumber,
             };
@@ -315,7 +314,7 @@ export class UserService {
                     lastname: v.lastname,
                     ownerID: v.ownerID,
                     birthdayDate: v.birthdayDate,
-                    nacionality: v.nationality,
+                    nationality: v.nationality,
                     phoneNumber: v.phoneNumber,
                     dniNumber: v.dniNumber,
                 };
