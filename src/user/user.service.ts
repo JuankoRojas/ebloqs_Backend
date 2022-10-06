@@ -20,6 +20,7 @@ import { Address } from './entities/address.entity';
 import { BlockchainService } from '../wallet/service/blockchain.service';
 import { Documents } from './entities/document.entity';
 import { UserModel } from 'src/models/users/user.model';
+import { CostExplorer } from 'aws-sdk';
 
 
 @Injectable()
@@ -65,6 +66,9 @@ export class UserService {
 
     findByEmail(email: string) {
         return this.userRepo.findOneBy({ email: email });
+    }
+    async findOneUserFromVerify(id: string) {
+        return this.userRepo.findOneBy({ id: id })
     }
 
     async findOneUser(id: string) {
@@ -119,12 +123,12 @@ export class UserService {
     }
 
     generatelinkvalidate(id: string) {
-        return `https://ebloqs-validate.netlify.app/?code=${id}`;
+        return `http://localhost:4200/welcome/${id}`;
     }
 
     async validateEmailUser(code: string) {
-        console.log(code)
-        let vuser = await this.findOneUser(code);
+        let vuser = await this.findOneUserFromVerify(code);
+        console.log(vuser)
         if (vuser.emailVerificated) {
             throw new UnauthorizedException('Este código ya caducó')
         } else {
@@ -299,6 +303,7 @@ export class UserService {
     async getOrderLastname() {
         var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         var orderLastnames = []
+
         for (const letter of letters) {
             const uusers = this.personalInfoRepo.find();
             const filters = (await uusers).filter(u => {
@@ -307,6 +312,7 @@ export class UserService {
             var listLastnames = filters.map((v) => {
                 return v.lastname[0];
             })
+
             var listUsers = filters.map(v => {
                 return {
                     id: v.id,
@@ -330,8 +336,13 @@ export class UserService {
                 }
                 return data;
             })
-            if (listCostumers[0] != undefined && listCostumers.length > 0) orderLastnames.push(listCostumers[0]); else null
+            if (listCostumers[0] != undefined && listCostumers.length > 0) {
+                orderLastnames.push(listCostumers[0]);
+
+            } else { null }
+
         }
+
         return orderLastnames;
     }
 

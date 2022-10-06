@@ -20,9 +20,13 @@ export class CreateTrasactionDto {
 
     @IsString()
     @ApiProperty()
-    readonly type: string;    
+    readonly customer_name: string;
 
     @IsString()
     @ApiProperty()
-    readonly status: number;  
+    readonly type: string;
+
+    @IsString()
+    @ApiProperty()
+    readonly status: number;
 }

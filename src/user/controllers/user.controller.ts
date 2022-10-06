@@ -90,6 +90,7 @@ export class UserController {
     // validar usuario por correo.
     @Post('validate')
     findAll(@Body() code: ValidateUserDto) {
+        console.log(code, " <------------------------------")
         return this.userService.validateEmailUser(code.code);
     }
 

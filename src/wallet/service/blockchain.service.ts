@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
+
 @Injectable()
 export class BlockchainService {
+    API_WALLET = process.env.WALLET_API_URL;
     constructor(
         // private configService: ConfigType<typeof config>,
         private httpService: HttpService,
@@ -12,7 +14,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .post(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/account/mnemonic?password=${password}`,
+                        `${this.API_WALLET}/account/mnemonic?password=${password}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -38,7 +40,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .get(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/BalanceOf/${publicKey}`,
+                        `${this.API_WALLET}/token/BalanceOf/${publicKey}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -64,7 +66,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .post(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/BalanceOf/`,
+                        `${this.API_WALLET}/token/BalanceOf/`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .post(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/approve/?spender=${data.spender}&amount=${data.amount}`, null,
+                        `${this.API_WALLET}/token/approve/?spender=${data.spender}&amount=${data.amount}`, null,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -116,7 +118,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .post(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/transfer/?to=${data.to}&amount=${data.amount}`, null,
+                        `${this.API_WALLET}/token/transfer/?to=${data.to}&amount=${data.amount}`, null,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -142,7 +144,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .get(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/TotalSupply`,
+                        `${this.API_WALLET}/token/TotalSupply`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
@@ -168,7 +170,7 @@ export class BlockchainService {
             return new Promise((resolve, reject) => {
                 this.httpService
                     .get(
-                        `https://ebloqs-hub-blockchain.herokuapp.com/api/token/BalanceOf/${key}`,
+                        `${this.API_WALLET}/token/BalanceOf/${key}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',

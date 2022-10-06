@@ -4,11 +4,11 @@ export default registerAs('config', () => {
     return {
         postgresUrl: process.env.DATABASE_URL,
         mysql: {
-            dbName: "test1",
-            port: "3306",
-            password: "S*k31MzOVP6k",
-            user: "admin",
-            host: "database-1.cdz8iclleall.us-east-2.rds.amazonaws.com",
+            dbName: process.env.MYSQL_DATABASE,
+            port:  process.env.MYSQL_PORT,
+            password: process.env.MYSQL_ROOT_PASSWORD,
+            user: process.env.MYSQL_USERNAME,
+            host: process.env.MYSQL_HOST,
         },
 
         typeorm: {

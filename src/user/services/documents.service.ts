@@ -14,11 +14,15 @@ export class DocumentsService {
 
 
     async createDocument(files: Array<Express.Multer.File>, userID: string, type: string) {
+        if (files.length <= 0 || files.length == undefined) {
+            let msgVerify = { message: "Error al cargar los documentos.", userID: userID, description: "No se han seleccionado ficheros." }
+            return msgVerify
+        }
         try {
             let documents = []
             files.forEach(async (file: any) => {
                 if (file.fieldname == "front") {
-                    //let urls = await this.upLoadsDocuments(files);
+                    let urls = await this.upLoadsDocuments(userID, files);
                     const newDocument = <Documents><unknown>{
                         id: uuidv4(),
                         type: type,
@@ -31,7 +35,7 @@ export class DocumentsService {
                     documents.push(cDocument);
                 }
                 if (file.fieldname == "rever") {
-                    //let urls = await this.upLoadsDocuments(files);
+                    let urls = await this.upLoadsDocuments(userID, files);
                     const newDocument = <Documents><unknown>{
                         id: uuidv4(),
                         type: type,

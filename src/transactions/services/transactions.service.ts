@@ -16,14 +16,15 @@ export class TransactionsService {
                 customer: createTransactionDto.customer,
                 receiver: createTransactionDto.receiver,
                 amount: createTransactionDto.amount,
-                type: createTransactionDto.type,
-                status: createTransactionDto.status
+                customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
+                type: createTransactionDto.type
             };
             const newTransaction = await this.transactionsRepo.save(transaction);
             return newTransaction;
 
         } catch (e: any) {
-            throw new HttpException(e.messagge, 500)
+            console.log(e.message);
+            return (e.messagge, 500)
         }
     }
 
@@ -61,6 +62,38 @@ export class TransactionsService {
         }
     }
 
+    // funtion para filtrar las transacciones y retornar por tipos.
+    async getByType(type: string) {
+        try {
+            const filter = await this.transactionsRepo.findBy({ type: type });
+            return { data: filter }
+        } catch (e: any) {
+            console.log(e.message)
+            throw new HttpException(e.mesagge, 500)
+        }
+    }
+    // function para obtener el monto de las transacciones y retornar los balances de cada uno.
+    async getBalances() {
+        try {
+            var balanceBank: number = 0;
+            var balanceCard: number = 0;
+            const dataBank = await this.transactionsRepo.findBy({ type: "banco" });
+            const dataCard = await this.transactionsRepo.findBy({ type: "credit/debit" });
+            for (const data of dataBank) {
+                const convertion = parseInt(data.amount)
+                balanceBank += convertion;
+            }
+
+            for (const data of dataCard) {
+                const convertion = parseInt(data.amount)
+                balanceCard += convertion;
+            }
+            return { balance_Bank: balanceBank, balance_Card: balanceCard, total_Balance: (balanceBank + balanceCard) }
+        } catch (e: any) {
+            console.log(e.message)
+            throw new HttpException(e.mesagge, 500)
+        }
+    }
 }
 
 

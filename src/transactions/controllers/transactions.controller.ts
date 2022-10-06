@@ -25,18 +25,33 @@ import { TransactionsService } from '../services/transactions.service';
 export class TransactionsController {
     constructor(private readonly transactionsService: TransactionsService,
     ) { }
+
+    @UseGuards(JwtAuthGuard)
     @Post('/new')
     create(@Body() createTransactionDto: CreateTrasactionDto) {
         return this.transactionsService.create(createTransactionDto);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get("/getAll")
     getAllTransactions() {
         return this.transactionsService.getAllTransactions();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post("/status")
     updateStatus(@Body() payload: any) {
         return this.transactionsService.updateStatusTransactionsBank(payload.id, payload.status)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post("/type")
+    getByStatus(@Body() payload: any) {
+        return this.transactionsService.getByType(payload.type)
+    }
+
+    @Get("/balances")
+    getBalances(){
+        return this.transactionsService.getBalances()
     }
 }
