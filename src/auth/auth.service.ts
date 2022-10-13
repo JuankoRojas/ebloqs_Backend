@@ -9,12 +9,16 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserEnt } from '../user/entities/user.entity';
+import { AdminsService } from '.././admins/services/admins.service';
+import { CreateAdminDto } from 'src/admins/dto/create-admin.dto';
+import { AdminEnt } from 'src/admins/entities/admin.entity';
 
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UserService,
+        private adminService: AdminsService,
         private jwtService: JwtService,
     ) { }
 
@@ -56,6 +60,21 @@ export class AuthService {
         }
 
     }
+
+    async validateAdmin(email: string, password: string): Promise<AdminEnt> {
+        const admin = await this.adminService.findByEmail(email);
+        if (admin) {
+            const verify = await bcrypt.compare(password, admin.password)
+            if (verify) {
+                return admin;
+            } else {
+                throw new UnauthorizedException('User unauthorized');
+            }
+        } else {
+            throw new UnauthorizedException('User not found');
+        }
+
+    }
     //1- login
     async login(user: any) {
         const validUser = await this.validateUser(user.email, user.deviceID);
@@ -89,8 +108,44 @@ export class AuthService {
         }
     }
 
-    // APPLE SIGNIN
+    // 2- registro de usuarios
+    async registerAdmin(userData: CreateAdminDto) {
+        try {
+            const user = await this.adminService.findByEmail(userData.email);
+            if (user) {
+                return {
+                    ok: false,
+                    messagge: `Esta email ya se encuentra registrado a una cuenta.`
+                }
+            } else {
+                const userRegister = await this.adminService.create(userData);
+                const payload = {
+                    userid: userRegister.id,
+                    user_name: userRegister.name,
+                    user_lastname: userRegister.lastname,
+                    rol: userRegister.rol,
+                };
+                return {
+                    access_token: this.jwtService.sign(payload),
+                };
+            }
 
+        } catch (error) {
+            throw new UnauthorizedException(error.message);
+        }
+    }
+
+    //1- login admin
+    async loginAdmin(user: any) {
+        const validAdmin = await this.validateAdmin(user.email, user.password);
+        const payload = { userid: validAdmin.id, user_name: validAdmin.name, user_lastname: validAdmin.lastname, rol: validAdmin.rol };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
+
+
+    // APPLE SIGNIN
     async getProfileByToken(
         loginDto: string,
         res: Response

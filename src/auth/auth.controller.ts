@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -28,8 +29,16 @@ export class AuthController {
         return this.authService.registerUser(payload);
     }
 
+    // 1- registro admin
+    @Post('/admin/register')
+    async adminRegister(@Body() payload: CreateAdminDto) {
+       return this.authService.registerAdmin(payload)
+    }
 
-
+    @Post('/admin/login')
+    adminLogin(@Body() payload) {
+        return this.authService.loginAdmin(payload)
+    }
     // >>>> no funcional <<<<
     @Post('/callback')
     async loginwithAppleinAdroid(@Req() payload: Request, @Res() res: Response) {

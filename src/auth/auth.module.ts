@@ -9,10 +9,12 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { AdminStrategy } from './admin.strategy';
+import { AdminsModule } from '../admins/admins.module';
 
 @Module({
     imports: [
         UserModule,
+        AdminsModule,
         PassportModule,
         JwtModule.registerAsync({
             inject: [config.KEY],
