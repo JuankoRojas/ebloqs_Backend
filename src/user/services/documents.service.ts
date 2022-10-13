@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Storages3Service } from '../../storages3/storages3.service';
 import { Repository } from 'typeorm';
@@ -20,39 +20,41 @@ export class DocumentsService {
         }
         try {
             let documents = []
-            files.forEach(async (file: any) => {
-                if (file.fieldname == "front") {
-                    let urls = await this.upLoadsDocuments(userID, files);
-                    const newDocument = <Documents><unknown>{
-                        id: uuidv4(),
-                        type: type,
-                        documentURL: await this.storageService.createFileDocument(userID, file),
-                        ownerID: userID,
-                        side: 'front'
-                    };
-                    const cDocument = this.docRepo.create(newDocument);
-                    await this.docRepo.save(cDocument);
-                    documents.push(cDocument);
-                }
-                if (file.fieldname == "rever") {
-                    let urls = await this.upLoadsDocuments(userID, files);
-                    const newDocument = <Documents><unknown>{
-                        id: uuidv4(),
-                        type: type,
-                        documentURL: await this.storageService.createFileDocument(userID, file),
-                        ownerID: userID,
-                        side: 'rever'
-                    };
-                    console.log(newDocument)
-                    const cDocument = this.docRepo.create(newDocument);
-                    await this.docRepo.save(cDocument);
-                    documents.push(cDocument);
-                }
-            })
-            let res = { message: "documentos cargados", userID: userID }
-            return res;
+            let file = files[0];
+
+            if (file.fieldname == "front") {
+                const newDocument = <Documents><unknown>{
+                    id: uuidv4(),
+                    type: type,
+                    documentURL: await this.storageService.createFileDocument(userID, file),
+                    ownerID: userID,
+                    side: 'front'
+                };
+                const cDocument = this.docRepo.create(newDocument);
+                await this.docRepo.save(cDocument);
+                documents.push(cDocument);
+                let res = { message: "documentos cargados", userID: userID }
+                return res;
+            }
+            if (file.fieldname == "rever") {
+                const newDocument = <Documents><unknown>{
+                    id: uuidv4(),
+                    type: type,
+                    documentURL: await this.storageService.createFileDocument(userID, file),
+                    ownerID: userID,
+                    side: 'rever'
+                };
+                console.log(newDocument)
+                const cDocument = this.docRepo.create(newDocument);
+                await this.docRepo.save(cDocument);
+                documents.push(cDocument);
+                let res = { message: "documentos cargados", userID: userID }
+                return res;
+            }
+
         } catch (e: any) {
             console.log(e.message);
+            throw new HttpException(e.mesagge, 500)
         }
     }
 

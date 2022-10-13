@@ -54,9 +54,9 @@ export class UserService {
             const newUser = await this.userRepo.save(user);
             const linkCode = this.generatelinkvalidate(newUser.id);
             console.log(linkCode);
-            /* if (newUser.typeAccount == 'email') {
+            if (newUser.typeAccount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
-            } */
+            } 
             return newUser;
 
         } catch (e) {
@@ -123,7 +123,7 @@ export class UserService {
     }
 
     generatelinkvalidate(id: string) {
-        return `http://localhost:4200/welcome/${id}`;
+        return `${process.env.EMAIL_VERIFY_URL}/validate/${id}`;
     }
 
     async validateEmailUser(code: string) {

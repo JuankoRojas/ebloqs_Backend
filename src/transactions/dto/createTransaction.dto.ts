@@ -24,7 +24,11 @@ export class CreateTrasactionDto {
 
     @IsString()
     @ApiProperty()
-    readonly type: string;
+    readonly payment_number: string;
+
+    @IsString()
+    @ApiProperty()
+    readonly type: number;
 
     @IsString()
     @ApiProperty()

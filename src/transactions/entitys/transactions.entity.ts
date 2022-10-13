@@ -22,6 +22,9 @@ export class Transactions {
 
     @Column({ type: 'varchar', nullable: false })
     customer_name: string;
+    
+    @Column({ type: 'varchar', nullable: false })
+    payment_number: string;
 
     @Column({ type: 'varchar', nullable: true })
     type: string;

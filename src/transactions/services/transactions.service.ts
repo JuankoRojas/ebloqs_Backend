@@ -11,13 +11,19 @@ export class TransactionsService {
 
     async create(createTransactionDto: CreateTrasactionDto) {
         try {
+            var type: string = "";
+            if (createTransactionDto.type === 0) { type = "bank"; }
+            if (createTransactionDto.type === 1) { type = "card"; }
+
+
             const transaction = <Transactions>{
                 id: createTransactionDto.id,
                 customer: createTransactionDto.customer,
                 receiver: createTransactionDto.receiver,
                 amount: createTransactionDto.amount,
                 customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
-                type: createTransactionDto.type
+                payment_number : createTransactionDto.payment_number,
+                type: type
             };
             const newTransaction = await this.transactionsRepo.save(transaction);
             return newTransaction;
@@ -30,8 +36,8 @@ export class TransactionsService {
 
     async getAllTransactions() {
         try {
-            const transactionsBank = await this.transactionsRepo.findBy({ type: "banco" });
-            const transactionsCard = await this.transactionsRepo.findBy({ type: "credit/debit" });
+            const transactionsBank = await this.transactionsRepo.findBy({ type: "bank" });
+            const transactionsCard = await this.transactionsRepo.findBy({ type: "card" });
             return { transactionsBank, transactionsCard }
         } catch (e: any) {
             throw new HttpException(e.mesagge, 500)
@@ -63,8 +69,11 @@ export class TransactionsService {
     }
 
     // funtion para filtrar las transacciones y retornar por tipos.
-    async getByType(type: string) {
+    async getByType(typeToFront: number) {
         try {
+            var type: string = "";
+            if (typeToFront === 0) { type = "bank"; }
+            if (typeToFront === 1) { type = "card"; }
             const filter = await this.transactionsRepo.findBy({ type: type });
             return { data: filter }
         } catch (e: any) {
@@ -77,8 +86,8 @@ export class TransactionsService {
         try {
             var balanceBank: number = 0;
             var balanceCard: number = 0;
-            const dataBank = await this.transactionsRepo.findBy({ type: "banco" });
-            const dataCard = await this.transactionsRepo.findBy({ type: "credit/debit" });
+            const dataBank = await this.transactionsRepo.findBy({ type: "bank" });
+            const dataCard = await this.transactionsRepo.findBy({ type: "card" });
             for (const data of dataBank) {
                 const convertion = parseInt(data.amount)
                 balanceBank += convertion;

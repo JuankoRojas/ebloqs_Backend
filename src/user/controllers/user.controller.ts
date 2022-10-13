@@ -67,13 +67,36 @@ export class UserController {
             },
         },
     })
-    // 4- carga de imagen documento de identidad. (falta apartar por lados)
+    // 4- carga de imagen documento de identidad frontal.
     @UseInterceptors(AnyFilesInterceptor())
-    @Post('/documents')
-    createDocument(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
+    @Post('/documents/front')
+    createDocumentFront(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
         return this.docService.createDocument(files, req['user']['userId'], type['type']);
     }
-
+    @UseGuards(JwtAuthGuard)
+    @ApiConsumes('multipart/form-data')
+    @ApiBearerAuth()
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                type: { type: 'string' },
+                files: {
+                    type: 'array',
+                    items: {
+                        type: 'string',
+                        format: 'binary',
+                    },
+                },
+            },
+        },
+    })
+    // 4- carga de imagen documento de identidad reverso.
+    @UseInterceptors(AnyFilesInterceptor())
+    @Post('/documents/rever')
+    createDocumentRever(@Req() req: Request, @UploadedFiles() files: Array<Express.Multer.File>, @Body() type: string) {
+        return this.docService.createDocument(files, req['user']['userId'], type['type']);
+    }
     // 5- guardar una direccion de un usuario.
     @UseGuards(JwtAuthGuard)
     @Post('/address')
@@ -110,7 +133,7 @@ export class UserController {
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+id, updateUserDto);
     }
-    
+
     @Delete('allclients')
     remove() {
         return this.userService.deleteAllClients();
