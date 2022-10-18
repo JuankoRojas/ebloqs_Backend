@@ -27,7 +27,7 @@ export class AdminEnt {
     birthdayDate: Date;
 
     @Column({ type: 'text', nullable: true })
-    rol: string;
+    rol: number;
 
     @Column({ array: false, type: 'varchar' })
     password: string;

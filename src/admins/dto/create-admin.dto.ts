@@ -20,5 +20,5 @@ export class CreateAdminDto {
 
     @IsString()
     @ApiProperty()
-    readonly role: string;
+    readonly role: number;
 }

@@ -39,4 +39,40 @@ export class AdminsService {
     findByEmail(email: string) {
         return this.adminRepo.findOneBy({ email: email });
     }
+
+    async getAll() {
+        try {
+            const users = await this.adminRepo.find();
+            return { users }
+        } catch (e: any) {
+            throw new HttpException(e.mesagge, 500)
+        }
+    }
+
+    async setRol(id: string, rol: number) {
+        try {
+            const message = `User # ${id} updated rol.`
+            switch (rol) {
+                case 0: {
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: 0 })
+                    return { ok: true, message }
+                }
+                case 1: {
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: 1 })
+
+                    return { ok: true, message }
+                }
+                case 2: {
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: 2 })
+                    return { ok: true, message }
+                }
+                case 3: {
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: 3 })
+                    return { ok: true, message }
+                }
+            }
+        } catch (e: any) {
+            throw new HttpException(e.mesagge, 500)
+        }
+    }
 }

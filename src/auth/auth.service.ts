@@ -73,7 +73,6 @@ export class AuthService {
         } else {
             throw new UnauthorizedException('User not found');
         }
-
     }
     //1- login
     async login(user: any) {
