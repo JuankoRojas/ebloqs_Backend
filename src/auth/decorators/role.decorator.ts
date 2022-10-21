@@ -1,6 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
 import { Role } from '../models/roles.model';
 
-export const ROLES_KEY = 'isPublic';
+export const META_ROLES = 'roles';
 
-export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
+export const RolesProtected = (...roles: Role[]) => SetMetadata(META_ROLES, roles);

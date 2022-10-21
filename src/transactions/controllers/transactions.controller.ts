@@ -49,7 +49,8 @@ export class TransactionsController {
     getByStatus(@Body() payload: any) {
         return this.transactionsService.getByType(payload.type)
     }
-
+    
+    @UseGuards(JwtAuthGuard)
     @Get("/balances")
     getBalances(){
         return this.transactionsService.getBalances()

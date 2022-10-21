@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { AdminEnt } from '../entities/admin.entity';
@@ -16,19 +16,29 @@ export class AdminsService {
 
     async create(createAdminDto: CreateAdminDto) {
         try {
-            const admin = <AdminEnt>{
-                id: uuidv4(),
-                email: createAdminDto.email.toLowerCase(),
-                name: `${createAdminDto.name.toLowerCase()}`,
-                lastname: createAdminDto.lastname.toLowerCase(),
-                password: await bcrypt.hash(createAdminDto.password, 10),
-                create: new Date(),
-                update: new Date(),
-            };
+            const user = await this.findByEmail(createAdminDto.email.toLowerCase());
+            if (user) {
+                return {
+                    ok: false,
+                    messagge: `Esta email ya se encuentra registrado a una cuenta.`
+                }
+            } else {
+                const admin = <AdminEnt>{
+                    id: uuidv4(),
+                    email: createAdminDto.email.toLowerCase(),
+                    name: `${createAdminDto.name.toLowerCase()}`,
+                    lastname: createAdminDto.lastname.toLowerCase(),
+                    password: await bcrypt.hash(createAdminDto.password, 10),
+                    create: new Date(),
+                    update: new Date(),
+                    rol: createAdminDto.role
+                };
 
-            const newUser = await this.adminRepo.save(admin);
+                const newUser = await this.adminRepo.save(admin);
 
-            return newUser;
+                return newUser;
+            }
+
 
         } catch (e: any) {
             console.log(e.message);
@@ -73,6 +83,64 @@ export class AdminsService {
             }
         } catch (e: any) {
             throw new HttpException(e.mesagge, 500)
+        }
+    }
+
+    async statusAccountAdmin(id: string) {
+        try {
+            const user_admin = await this.adminRepo.findOne({ where: { id: id } });
+            if (user_admin.status === true) {
+
+                const disable = await this.adminRepo.update({ id: id }, { status: false });
+                return { message: `User ${user_admin.name} ${user_admin.lastname} with id ${user_admin.id} is disabled.` }
+            }
+            else {
+                const enabled = await this.adminRepo.update({ id: id }, { status: true })
+                return { message: `User ${user_admin.name} ${user_admin.lastname} with id ${user_admin.id} is enabled.` }
+            }
+
+        } catch (e) {
+            throw new BadRequestException(e.mesagge)
+        }
+    }
+
+    async updateAdmin(updateAdminDto: AdminEnt) {
+        try {
+            const adminVerify = await this.adminRepo.findBy({ id: updateAdminDto.id });
+            if (adminVerify.length > 0) {
+                const admin = {
+                    id: updateAdminDto.id,
+                    email: updateAdminDto.email.toLowerCase(),
+                    name: `${updateAdminDto.name.toLowerCase()}`,
+                    lastname: updateAdminDto.lastname.toLowerCase(),
+                    update: new Date(),
+                    rol: updateAdminDto.rol
+                };
+                const updateUser = await this.adminRepo.update({ id: admin.id }, admin);
+                return { messagge: 'user updated', admin };
+            } else {
+                return { messagge: `User with id : ${updateAdminDto.id} not found.` };
+            }
+
+        } catch (e) {
+            throw new BadRequestException(e.mesagge)
+        }
+
+    }
+
+    async deleteAdmin(id: string) {
+        try {
+            const adminVerify = await this.adminRepo.findBy({ id: id });
+            if (adminVerify.length > 0) {
+
+                const updateUser = await this.adminRepo.delete({ id: id });
+                return { ok: true, messagge: 'Admin deleted' };
+            } else {
+                return { messagge: `User with id : ${id} not found.` };
+            }
+
+        } catch (e) {
+            throw new BadRequestException(e.mesagge)
         }
     }
 }

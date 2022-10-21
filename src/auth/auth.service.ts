@@ -77,7 +77,7 @@ export class AuthService {
     //1- login
     async login(user: any) {
         const validUser = await this.validateUser(user.email, user.deviceID);
-        const payload = { userid: validUser.id, deviceID: validUser.deviceID, username: validUser.name };
+        const payload = { userId: validUser.id, deviceID: validUser.deviceID, username: validUser.name };
         return {
             access_token: this.jwtService.sign(payload),
         };
@@ -94,7 +94,7 @@ export class AuthService {
             } else {
                 const userRegister = await this.usersService.create(userData);
                 const payload = {
-                    userid: userRegister.id,
+                    userId: userRegister.id,
                     deviceID: userRegister.deviceID,
                 };
                 return {
@@ -117,9 +117,9 @@ export class AuthService {
                     messagge: `Esta email ya se encuentra registrado a una cuenta.`
                 }
             } else {
-                const userRegister = await this.adminService.create(userData);
+                const userRegister: any = await this.adminService.create(userData);
                 const payload = {
-                    userid: userRegister.id,
+                    userId: userRegister.id,
                     user_name: userRegister.name,
                     user_lastname: userRegister.lastname,
                     rol: userRegister.rol,
@@ -137,7 +137,7 @@ export class AuthService {
     //1- login admin
     async loginAdmin(user: any) {
         const validAdmin = await this.validateAdmin(user.email, user.password);
-        const payload = { userid: validAdmin.id, user_name: validAdmin.name, user_lastname: validAdmin.lastname, rol: validAdmin.rol };
+        const payload = { userId: validAdmin.id, user_name: validAdmin.name, user_lastname: validAdmin.lastname, rol: validAdmin.rol, status: validAdmin.status };
         return {
             access_token: this.jwtService.sign(payload),
         };

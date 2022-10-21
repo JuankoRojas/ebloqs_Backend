@@ -168,4 +168,9 @@ export class UserController {
     setStatus(@Body() data) {
         return this.userService.setStatus(data.id, data.status);
     }
+    @UseGuards(JwtAuthGuard)
+    @Post('/avatar')
+    updateAvatar(@Body() data) {
+        return this.userService.updateAvatar(data.id, data.avatar);
+    }
 }

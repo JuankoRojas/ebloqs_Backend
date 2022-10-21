@@ -41,8 +41,11 @@ export class UserEnt {
     @Column({ type: 'bool', nullable: true, default: true })
     status: boolean;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'bool', nullable: true })
     verify: boolean;
+
+    @Column({ type: 'varchar', default: 'pet-4.svg' })
+    avatar: string;
 
     @CreateDateColumn({
         type: 'timestamp',

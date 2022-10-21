@@ -13,9 +13,9 @@ export class DocumentsService {
     ) { }
 
 
-    async createDocument(files: Array<Express.Multer.File>, userID: string, type: string) {
+    async createDocument(files: Array<Express.Multer.File>, userId: string, type: string) {
         if (files.length <= 0 || files.length == undefined) {
-            let msgVerify = { message: "Error al cargar los documentos.", userID: userID, description: "No se han seleccionado ficheros." }
+            let msgVerify = { message: "Error al cargar los documentos.", userId: userId, description: "No se han seleccionado ficheros." }
             return msgVerify
         }
         try {
@@ -26,29 +26,29 @@ export class DocumentsService {
                 const newDocument = <Documents><unknown>{
                     id: uuidv4(),
                     type: type,
-                    documentURL: await this.storageService.createFileDocument(userID, file),
-                    ownerID: userID,
+                    documentURL: await this.storageService.createFileDocument(userId, file),
+                    ownerID: userId,
                     side: 'front'
                 };
                 const cDocument = this.docRepo.create(newDocument);
                 await this.docRepo.save(cDocument);
                 documents.push(cDocument);
-                let res = { message: "documentos cargados", userID: userID }
+                let res = { message: "documentos cargados", userId: userId }
                 return res;
             }
             if (file.fieldname == "rever") {
                 const newDocument = <Documents><unknown>{
                     id: uuidv4(),
                     type: type,
-                    documentURL: await this.storageService.createFileDocument(userID, file),
-                    ownerID: userID,
+                    documentURL: await this.storageService.createFileDocument(userId, file),
+                    ownerID: userId,
                     side: 'rever'
                 };
                 console.log(newDocument)
                 const cDocument = this.docRepo.create(newDocument);
                 await this.docRepo.save(cDocument);
                 documents.push(cDocument);
-                let res = { message: "documentos cargados", userID: userID }
+                let res = { message: "documentos cargados", userId: userId }
                 return res;
             }
 
@@ -59,10 +59,10 @@ export class DocumentsService {
     }
 
 
-    async upLoadsDocuments(userID: string, files: Array<Express.Multer.File>): Promise<string[]> {
+    async upLoadsDocuments(userId: string, files: Array<Express.Multer.File>): Promise<string[]> {
         let urlsFIles = [];
         for await (const fileUrs of files) {
-            const url = await this.storageService.createFileDocument(userID, fileUrs)
+            const url = await this.storageService.createFileDocument(userId, fileUrs)
             urlsFIles = [...urlsFIles, url];
 
             if (urlsFIles.length == files.length) {

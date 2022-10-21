@@ -1,6 +1,6 @@
-import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
@@ -47,6 +47,7 @@ export class UserService {
                 password: "",
                 idRef: randomCode(),
                 emailVerificated: false,
+                avatar: "pet-4.svg",
                 create: new Date(),
                 update: new Date(),
             };
@@ -56,7 +57,7 @@ export class UserService {
             console.log(linkCode);
             if (newUser.typeAccount == 'email') {
                 await this.emailService.sendVerificationEmails(newUser.email, linkCode);
-            } 
+            }
             return newUser;
 
         } catch (e) {
@@ -213,7 +214,7 @@ export class UserService {
         return await this.userRepo.clear()
     }
 
-    async updatePersonalData(userID: string, data: UpdatePersonalDataDto) {
+    async updatePersonalData(userId: string, data: UpdatePersonalDataDto) {
 
         let payload = {
             name: data.name.toLocaleLowerCase(),
@@ -224,15 +225,15 @@ export class UserService {
             dniNumber: data.dniNumber
         }
 
-        const verify = await this.personalInfoRepo.findOneBy({ ownerID: userID });
+        const verify = await this.personalInfoRepo.findOneBy({ ownerID: userId });
 
         if (verify) {
-            const newData = await this.personalInfoRepo.update({ ownerID: userID }, payload);
+            const newData = await this.personalInfoRepo.update({ ownerID: userId }, payload);
             return { message: "user Updated", payload }
         } else {
             const newData = this.personalInfoRepo.create(payload);
             newData.id = uuidv4();
-            newData.ownerID = userID;
+            newData.ownerID = userId;
 
             return await this.personalInfoRepo.save(newData);
         }
@@ -305,44 +306,44 @@ export class UserService {
         var orderLastnames = []
 
         for (const letter of letters) {
-            const uusers = this.personalInfoRepo.find();
-            const filters = (await uusers).filter(u => {
-                return u.lastname.toLowerCase().startsWith(letter.toLowerCase());
-            })
-            var listLastnames = filters.map((v) => {
-                return v.lastname[0];
-            })
+            const users = await this.personalInfoRepo.find({ where: { lastname: Like(`%${letter.toLowerCase()}%`) }, take: 4 })
+            if (users.length > 0) {
+                const filters = (await users).filter(u => {
+                    return u.lastname.toLowerCase().startsWith(letter.toLowerCase());
+                })
+                var listLastnames = filters.map((v) => {
+                    return v.lastname[0];
+                })
 
-            var listUsers = filters.map(v => {
-                return {
-                    id: v.id,
-                    name: v.name,
-                    lastname: v.lastname,
-                    ownerID: v.ownerID,
-                    birthdayDate: v.birthdayDate,
-                    nationality: v.nationality,
-                    phoneNumber: v.phoneNumber,
-                    dniNumber: v.dniNumber,
-                };
-            })
-            var titleWithOutDuplicate = listLastnames.sort().filter((value, index) => {
-                return listLastnames.indexOf(value) === index;
-            })
+                var listUsers = filters.map(v => {
+                    return {
+                        id: v.id,
+                        name: v.name,
+                        lastname: v.lastname,
+                        ownerID: v.ownerID,
+                        birthdayDate: v.birthdayDate,
+                        nationality: v.nationality,
+                        phoneNumber: v.phoneNumber,
+                        dniNumber: v.dniNumber,
+                    };
+                })
+                var titleWithOutDuplicate = listLastnames.sort().filter((value, index) => {
+                    return listLastnames.indexOf(value) === index;
+                })
 
-            var listCostumers = titleWithOutDuplicate.map((c) => {
-                let data = {
-                    title: c,
-                    lastnames: listUsers.filter((r) => r.lastname[0].toLowerCase() === c.toLowerCase())
-                }
-                return data;
-            })
-            if (listCostumers[0] != undefined && listCostumers.length > 0) {
-                orderLastnames.push(listCostumers[0]);
-
-            } else { null }
-
+                var listCostumers = titleWithOutDuplicate.map((c) => {
+                    let data = {
+                        title: c,
+                        lastnames: listUsers.filter((r) => r.lastname[0].toLowerCase() === c.toLowerCase())
+                    }
+                    return data;
+                })
+                if (listCostumers[0] != undefined && listCostumers.length > 0) {
+                    orderLastnames.push(listCostumers[0]);
+                } else { null }
+            }
+            null
         }
-
         return orderLastnames;
     }
 
@@ -377,6 +378,17 @@ export class UserService {
 
         } catch (e: any) {
 
+        }
+    }
+
+    async updateAvatar(id: string, avatarURL: string) {
+        try {
+
+            const newAvatar = await this.userRepo.update({ id: id }, { avatar: avatarURL });
+            return { status: status, message: `Usuario : ${id} activo.` }
+
+        } catch (e: any) {
+            throw new BadRequestException(e.message)
         }
     }
 

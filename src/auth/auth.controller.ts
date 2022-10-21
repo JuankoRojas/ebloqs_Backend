@@ -35,6 +35,7 @@ export class AuthController {
        return this.authService.registerAdmin(payload)
     }
 
+  
     @Post('/admin/login')
     adminLogin(@Body() payload) {
         return this.authService.loginAdmin(payload)

@@ -26,7 +26,7 @@ export class AdminEnt {
     })
     birthdayDate: Date;
 
-    @Column({ type: 'text', nullable: true })
+    @Column({ type: 'integer', default: 2 })
     rol: number;
 
     @Column({ array: false, type: 'varchar' })
