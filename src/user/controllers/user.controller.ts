@@ -170,7 +170,20 @@ export class UserController {
     }
     @UseGuards(JwtAuthGuard)
     @Post('/avatar')
-    updateAvatar(@Body() data) {
-        return this.userService.updateAvatar(data.id, data.avatar);
+    updateAvatar(@Req() req: Request, @Body() data) {
+        return this.userService.updateAvatar(req['user']['userId'], data.avatar);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/delete/data')
+    clearData(@Req() req: Request) {
+        return this.userService.clearData(req['user']['userId']);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/verify')
+    Verify(@Req() req: Request, @Body() data) {
+        return this.userService.verify(req['user']['userId'], data.verify);
     }
 }
+

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Like, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -75,31 +75,32 @@ export class UserService {
     async findOneUser(id: string) {
         try {
             const primaryData = await this.userRepo.findOneBy({ id: id })
-            const personalData = await this.personalInfoRepo.findOneBy({ ownerID: id })
-            const addressData = await this.addressRepo.findOneBy({ ownerID: id })
+            if (!primaryData) return { message: `User with id : ${id} not found.` };
+            const personalData = await this.personalInfoRepo.findOneBy({ ownerID: id });
+            const addressData = await this.addressRepo.findOneBy({ ownerID: id });
 
             let meData = <UserModel>{
-                id: primaryData.id,
-                name: personalData.name,
-                lastName: personalData.lastname,
-                email: primaryData.email,
-                birthdayDate: personalData.birthdayDate,
-                typeAccount: primaryData.typeAccount,
-                deviceID: primaryData.deviceID,
-                emailVerificated: primaryData.emailVerificated,
-                password: primaryData.password,
-                idRef: primaryData.idRef,
-                status: primaryData.status,
+                id: primaryData.id || "",
+                name: personalData?.name || "",
+                lastName: personalData?.lastname || "",
+                email: primaryData.email || "",
+                birthdayDate: personalData?.birthdayDate || "",
+                typeAccount: primaryData.typeAccount || "",
+                deviceID: primaryData.deviceID || "",
+                emailVerificated: primaryData.emailVerificated || "",
+                password: primaryData.password || "",
+                idRef: primaryData.idRef || "",
+                status: primaryData.status || "",
                 verify: primaryData?.verify || "",
+                avatar: primaryData?.avatar || "",
                 create: primaryData.create,
                 update: primaryData.update,
                 nationality: personalData?.nationality || "",
-                phone: personalData.phoneNumber,
-                DniNumber: personalData.dniNumber,
+                phone: personalData?.phoneNumber,
+                DniNumber: personalData?.dniNumber || "",
                 zipCode: addressData?.postalCode || "",
                 city: addressData?.city || "",
-                address: addressData?.address1 || "",
-                avatar: ""
+                address: addressData?.address1 || ""
             }
 
             return meData;
@@ -383,9 +384,38 @@ export class UserService {
 
     async updateAvatar(id: string, avatarURL: string) {
         try {
-
             const newAvatar = await this.userRepo.update({ id: id }, { avatar: avatarURL });
-            return { status: status, message: `Usuario : ${id} activo.` }
+            return { message: `Usuario : ${id} avatar changed.` }
+
+        } catch (e: any) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
+    async verify(id: string, verify: boolean) {
+        try {
+            if (verify === true) {
+                await this.userRepo.update({ id: id }, { verify: true });
+                return { message: `User : ${id} is verify.`, status: verify }
+            } else {
+                throw new BadGatewayException('User not found.')
+            }
+
+        } catch (e: any) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
+
+    async clearData(id: string) {
+        try {
+            const userEnt = await this.userRepo.delete({ id: id });
+            const userInfo = await this.personalInfoRepo.delete({ ownerID: id });
+            const wallet = await this.walletRepo.delete({ ownerId: id });
+            const address = await this.addressRepo.delete({ ownerID: id });
+            const document = await this.documentRepo.delete({ ownerID: id });
+
+            return { message: `Data user : ${id} is deleted.` }
 
         } catch (e: any) {
             throw new BadRequestException(e.message)
@@ -393,6 +423,8 @@ export class UserService {
     }
 
 }
+
+
 
 function randomCode() {
     var characters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];

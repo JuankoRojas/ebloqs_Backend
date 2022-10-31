@@ -15,6 +15,20 @@ export class TransactionsService {
             if (createTransactionDto.type === 0) { type = "bank"; }
             if (createTransactionDto.type === 1) { type = "card"; }
 
+            if ( createTransactionDto.type === 1){
+                const transaction = <Transactions>{
+                    id: createTransactionDto.id,
+                    customer: createTransactionDto.customer,
+                    receiver: createTransactionDto.receiver,
+                    amount: createTransactionDto.amount,
+                    customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
+                    payment_number : createTransactionDto.payment_number,
+                    type: type,
+                    status : createTransactionDto.status
+                }
+                const newTransaction = await this.transactionsRepo.save(transaction);
+                return newTransaction;
+            }
 
             const transaction = <Transactions>{
                 id: createTransactionDto.id,
@@ -24,9 +38,11 @@ export class TransactionsService {
                 customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
                 payment_number : createTransactionDto.payment_number,
                 type: type
-            };
+            }
             const newTransaction = await this.transactionsRepo.save(transaction);
             return newTransaction;
+            
+           
 
         } catch (e: any) {
             console.log(e.message);

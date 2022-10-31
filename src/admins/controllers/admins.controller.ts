@@ -17,17 +17,23 @@ export class AdminsController {
 
 
     @Get("/users")
-    getBalances() {
+    @RolesProtected(Role.PRO, Role.ADMIN, Role.READ)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
+    getUsers() {
         return this.adminService.getAll()
     }
 
     @Post("/rol")
+    @RolesProtected(Role.PRO, Role.ADMIN)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
     setRol(@Body() payload) {
         return this.adminService.setRol(payload.id, payload.rol);
     }
 
     @UseGuards(JwtAdminsAuthGuard)
     @Get('private')
+    @RolesProtected(Role.PRO, Role.ADMIN, Role.READ)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
     privateRoute(@GetAdmin() admin: AdminEnt) {
         return {
             ok: true,
@@ -36,16 +42,22 @@ export class AdminsController {
         }
     }
     @Post('/status')
+    @RolesProtected(Role.PRO, Role.ADMIN)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
     disableAdmin(@Body() payload) {
         return this.adminService.statusAccountAdmin(payload.id)
     }
 
     @Post('/update')
+    @RolesProtected(Role.PRO, Role.ADMIN)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
     updateAdmin(@Body() payload: AdminEnt) {    
         return this.adminService.updateAdmin(payload)
     }
 
     @Post('/delete')
+    @RolesProtected(Role.PRO, Role.ADMIN)
+    @UseGuards(JwtAdminsAuthGuard, AdminRoleGuard)
     deletedAdmin(@Body() payload) {
         return this.adminService.deleteAdmin(payload.id)
     }
