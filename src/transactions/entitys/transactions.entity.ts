@@ -15,9 +15,6 @@ export class Transactions {
     customer: string;
 
     @Column({ type: 'varchar', nullable: true })
-    receiver: string;
-
-    @Column({ type: 'varchar', nullable: true })
     amount: string;
 
     @Column({ type: 'varchar', nullable: false })

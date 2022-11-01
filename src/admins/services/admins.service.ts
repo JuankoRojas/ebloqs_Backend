@@ -5,6 +5,7 @@ import { AdminEnt } from '../entities/admin.entity';
 import { AdminEntRepository } from '../repository/admin.repository';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../../auth/models/roles.model';
 
 @Injectable()
 export class AdminsService {
@@ -52,8 +53,14 @@ export class AdminsService {
 
     async getAll() {
         try {
-            const users = await this.adminRepo.find();
-            return { users }
+            const adminsGroupExeptSuperAdmin = []
+            const admins = await this.adminRepo.find();
+            for (const admin of admins) {
+                if(admin.rol !=  Role.PRO){
+                    adminsGroupExeptSuperAdmin.push(admin);
+                }
+            }
+            return { admins : adminsGroupExeptSuperAdmin }
         } catch (e: any) {
             throw new HttpException(e.mesagge, 500)
         }
@@ -64,20 +71,20 @@ export class AdminsService {
             const message = `User # ${id} updated rol.`
             switch (rol) {
                 case 0: {
-                    const transaction = await this.adminRepo.update({ id: id }, { rol: 0 })
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: "0" })
                     return { ok: true, message }
                 }
                 case 1: {
-                    const transaction = await this.adminRepo.update({ id: id }, { rol: 1 })
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: "1" })
 
                     return { ok: true, message }
                 }
                 case 2: {
-                    const transaction = await this.adminRepo.update({ id: id }, { rol: 2 })
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: "2" })
                     return { ok: true, message }
                 }
                 case 3: {
-                    const transaction = await this.adminRepo.update({ id: id }, { rol: 3 })
+                    const transaction = await this.adminRepo.update({ id: id }, { rol: "3" })
                     return { ok: true, message }
                 }
             }

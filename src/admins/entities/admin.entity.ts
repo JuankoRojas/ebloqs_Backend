@@ -26,8 +26,8 @@ export class AdminEnt {
     })
     birthdayDate: Date;
 
-    @Column({ type: 'integer', default: 2 })
-    rol: number;
+    @Column({ type: 'varchar', default: 2 })
+    rol: string;
 
     @Column({ array: false, type: 'varchar' })
     password: string;

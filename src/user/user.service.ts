@@ -385,7 +385,7 @@ export class UserService {
     async updateAvatar(id: string, avatarURL: string) {
         try {
             const newAvatar = await this.userRepo.update({ id: id }, { avatar: avatarURL });
-            return { message: `Usuario : ${id} avatar changed.` }
+            return { message: `User : ${id} avatar changed.` }
 
         } catch (e: any) {
             throw new BadRequestException(e.message)

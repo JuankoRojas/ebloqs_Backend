@@ -19,7 +19,6 @@ export class TransactionsService {
                 const transaction = <Transactions>{
                     id: createTransactionDto.id,
                     customer: createTransactionDto.customer,
-                    receiver: createTransactionDto.receiver,
                     amount: createTransactionDto.amount,
                     customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
                     payment_number : createTransactionDto.payment_number,
@@ -33,7 +32,6 @@ export class TransactionsService {
             const transaction = <Transactions>{
                 id: createTransactionDto.id,
                 customer: createTransactionDto.customer,
-                receiver: createTransactionDto.receiver,
                 amount: createTransactionDto.amount,
                 customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
                 payment_number : createTransactionDto.payment_number,

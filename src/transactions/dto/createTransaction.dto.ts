@@ -12,10 +12,6 @@ export class CreateTrasactionDto {
 
     @IsString()
     @ApiProperty()
-    readonly receiver: string;
-
-    @IsString()
-    @ApiProperty()
     readonly amount: string;
 
     @IsString()
