@@ -28,5 +28,9 @@ export class CreateTrasactionDto {
 
     @IsString()
     @ApiProperty()
+    readonly customer_id_ref: string;
+
+    @IsString()
+    @ApiProperty()
     readonly status: number;
 }

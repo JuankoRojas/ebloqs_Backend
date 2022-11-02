@@ -21,6 +21,7 @@ export class TransactionsService {
                     customer: createTransactionDto.customer,
                     amount: createTransactionDto.amount,
                     customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
+                    customer_id_ref: createTransactionDto.customer_id_ref,
                     payment_number : createTransactionDto.payment_number,
                     type: type,
                     status : createTransactionDto.status
@@ -34,6 +35,7 @@ export class TransactionsService {
                 customer: createTransactionDto.customer,
                 amount: createTransactionDto.amount,
                 customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
+                customer_id_ref: createTransactionDto.customer_id_ref,
                 payment_number : createTransactionDto.payment_number,
                 type: type
             }
