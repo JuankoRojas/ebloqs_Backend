@@ -1,18 +1,18 @@
 import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
-import AppleAuth, { AppleAuthConfig } from "apple-auth";
 import appleSigninAuth from 'apple-signin-auth';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as file from 'fs'
 
 
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserEnt } from '../user/entities/user.entity';
 import { AdminsService } from '.././admins/services/admins.service';
-import { CreateAdminDto } from 'src/admins/dto/create-admin.dto';
-import { AdminEnt } from 'src/admins/entities/admin.entity';
-
+import { CreateAdminDto } from '../admins/dto/create-admin.dto';
+import { AdminEnt } from '../admins/entities/admin.entity';
+import { authAppleKey } from '../keys/AuthConfig';
 
 @Injectable()
 export class AuthService {
@@ -139,7 +139,9 @@ export class AuthService {
         const validAdmin = await this.validateAdmin(user.email, user.password);
         const payload = { userId: validAdmin.id, user_name: validAdmin.name, user_lastname: validAdmin.lastname, rol: validAdmin.rol, status: validAdmin.status };
         return {
-            access_token: this.jwtService.sign(payload),
+            name: validAdmin.name,
+            lastname: validAdmin.lastname,
+            access_token: this.jwtService.sign(payload)
         };
     }
 
@@ -164,46 +166,63 @@ export class AuthService {
             throw new HttpException(error, 500)
         }
     }
-    // >>>> no funcional <<<<
-    async callbackApple(request: Request, res: Response) {
+
+
+    async appleCallBack(req: Request) {
+        console.log("---------------------- Appple Callback -------------------")
         try {
             const redirect = `intent://callback?${new URLSearchParams(
-                request.body
+                req.body
             ).toString()}#Intent;package=${process.env.ANDROID_PACKAGE_IDENTIFIER
                 };scheme=signinwithapple;end`;
 
             console.log(`Redirecting to ${redirect}`);
 
-            return res.redirect(307, redirect)
+            return { url: redirect };
         } catch (error) {
             console.log(`Callback error: ${error}`);
-            throw new Error(error);
         }
+        console.log("---------------------- -------------------")
     }
-    // >>>> no funcional <<<<
-    async signinApple(request: Request, res: Response) {
-        try {
-            const configAuth = <AppleAuthConfig>{
-                client_id: 'com.ebloqs.signinservice',
-                team_id: process.env.TEAM_ID,
-                redirect_uri: "https://agile-beach-41948.herokuapp.com/auth/callback/signinwithapple",
-                key_id: process.env.KEY_ID,
-            };
 
-            const auth = new AppleAuth(
-                configAuth,
-                process.env.KEY_CONTENTS,
+    // >>>> en fase de prueba <<<<
+    async signinApple(req: Request) {
+        const AppleAuth = require('apple-auth');
+        console.log("---------------------- Appple SignIn -------------------")
+        try {
+            const authApple = new AppleAuth(
+                {
+                    // use the bundle ID as client ID for native apps, else use the service ID for web-auth flows
+                    // https://forums.developer.apple.com/thread/118135
+                    client_id:
+                        req.query.useBundleId === "true"
+                            ? authAppleKey.BUNDLEID// can use atuthAppleKey.BUNDLEID
+                            : authAppleKey.SERVICEID,
+                    team_id: authAppleKey.TEAMID,
+                    redirect_uri: authAppleKey.APPLE_REDIRECT_URL, // does not matter here, as this is already the callback that verifies the token after the redirection
+                    key_id: authAppleKey.KEYID,
+                },
+                authAppleKey.KEYP8.replace(/\|/g, '\n'),
                 "text"
             );
 
-            console.log(request['code'])
+            const accessToken = await authApple.accessToken(req.query.code);
+    
+            if (accessToken) {
+                const decodeToken: any = this.jwtService.decode(accessToken.id_token);
+                console.log("------------------APPLE SIGN IN DECODE TOKEN-------------------");
+                const regexemail = /\@([A-Z|a-z|0-9])+((\.){0,1}[A-Z|a-z|0-9]){2}\.[a-z]{2,3}$/;
+                const userName = decodeToken.email.split(regexemail)[0];
+                return { name: userName, email: decodeToken.email }
+            } else {
+                throw new UnauthorizedException({ message: "token not found." })
+            }
 
-            const accessToken = await auth.accessToken(request['code'].toString());
 
-            return this.getProfileByToken(accessToken.id_token, res);
+
         } catch (error) {
             console.log(`signInWithApple error: ${error}`);
-            throw new HttpException(error, 500);
         }
+        console.log("---------------------- -------------------")
     }
 }

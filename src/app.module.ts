@@ -14,6 +14,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { TransactionsModule } from './transactions/transactions.module';
 import { TokensModule } from './tokens/tokens.module';
 import { AdminsModule } from './admins/admins.module';
+import { ProyectsModule } from './proyects/proyects.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { AdminsModule } from './admins/admins.module';
         TransactionsModule,
         TokensModule,
         AdminsModule,
+        ProyectsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

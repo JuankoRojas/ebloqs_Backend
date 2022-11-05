@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -32,22 +32,25 @@ export class AuthController {
     // 1- registro admin
     @Post('/admin/register')
     async adminRegister(@Body() payload: CreateAdminDto) {
-       return this.authService.registerAdmin(payload)
+        return this.authService.registerAdmin(payload)
     }
 
-  
+
     @Post('/admin/login')
     adminLogin(@Body() payload) {
         return this.authService.loginAdmin(payload)
     }
-    // >>>> no funcional <<<<
-    @Post('/callback')
-    async loginwithAppleinAdroid(@Req() payload: Request, @Res() res: Response) {
-        return this.authService.callbackApple(payload.body, res);
+
+    // >>>> En pruebas <<<<
+    @Post('/sign_in_with_apple')
+    async siginWithApple(@Req() request: Request) {
+        return this.authService.signinApple(request);
     }
-    // >>>> no funcional <<<<
-    @Post('/callback/signinwithapple')
-    async loginwithApple(@Body() request: Request, @Res() res: Response) {
-        return this.authService.signinApple(request, res);
+
+    // >>>> En pruebas <<<<
+    @Post('/callback/sign_in_with_apple')
+    @Redirect()
+    async appleCallBack(@Req() request: Request) {
+        return this.authService.appleCallBack(request);
     }
 }

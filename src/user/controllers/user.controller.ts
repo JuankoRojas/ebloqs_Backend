@@ -146,6 +146,12 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('/count/customers')
+    getTotalCustomers() {
+        return this.userService.countCustomers();
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Post('/searchLastname/:search')
     getUserSearchLastname(@Param('search') search: string) {
         return this.userService.getUserSearchLastname(search);

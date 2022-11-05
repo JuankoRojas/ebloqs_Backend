@@ -302,9 +302,22 @@ export class UserService {
         return listCostumers
     }
 
+    async countCustomers() {
+        try {
+            const totalUsers = await this.personalInfoRepo.findAndCount()
+
+            return { totalCustomers: totalUsers[1] }
+        } catch (e: any) {
+            console.log(e.message)
+            throw new BadRequestException(e.message);
+        }
+    }
+
     async getOrderLastname() {
         var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         var orderLastnames = []
+
+
 
         for (const letter of letters) {
             const users = await this.personalInfoRepo.find({ where: { lastname: Like(`%${letter.toLowerCase()}%`) }, take: 4 })
