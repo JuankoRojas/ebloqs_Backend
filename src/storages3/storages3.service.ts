@@ -35,6 +35,24 @@ export class Storages3Service {
         }
     }
 
+    async createPicDocument(id: string, file: Express.Multer.File): Promise<string> {
+        try {
+            var docNameUnique = `pic-${id}${file.originalname}`
+
+            const urlKey = `proyects/pics/${docNameUnique}`;
+            const params = {
+                Body: file.buffer,
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: urlKey,
+                ACL: "public-read",
+                ContentType: "image/png"
+            };
+            return this.uploadFile(params);
+
+        } catch (error) {
+            throw new HttpException(`Error al crear el documento: ${error}`, 351)
+        }
+    }
 
     async uploadFile(params: any) {
         try {
