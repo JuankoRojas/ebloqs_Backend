@@ -13,6 +13,10 @@ export class CreateProyectDto {
 
     @IsString()
     @ApiProperty()
+    readonly city: string;
+
+    @IsString()
+    @ApiProperty()
     readonly type: string;
 
     @IsString()
@@ -62,4 +66,12 @@ export class CreateProyectDto {
     @IsString()
     @ApiProperty()
     readonly status: number;
+
+    @IsString()
+    @ApiProperty()
+    readonly address_id: string;
+
+    @IsBoolean()
+    @ApiProperty()
+    readonly featured: boolean;
 }

@@ -7,27 +7,15 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Tokens {
+export class ProyectsFeatured {
     @PrimaryColumn()
-    id: string;
+    id_proyect: string;
 
     @Column({ type: 'varchar', nullable: true })
-    ebl_balance: string;
+    token: string;
 
     @Column({ type: 'varchar', nullable: true })
-    dollar_balance: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    private_round: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    ico_cost: string;
-
-    @Column({ type: 'varchar', nullable: true })
-    presale: string;
-
-    @Column({ type: 'boolean', nullable: true, default: 1 })
-    presale_status: boolean;
+    status: string;
 
     @CreateDateColumn({
         type: 'timestamp',

@@ -60,4 +60,17 @@ export class ProyectsController {
     getProyectById(@Body() data: any) {
         return this.proyectService.getProyectById(data.idProyect);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/get/Bycity')
+    getProyectByCity() {
+        return this.proyectService.proyectByCity();
+    }
+
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/featured/validate')
+    validatePoyectFeatures() {
+        return this.proyectService.validateFeaturedTime();
+    }
 }

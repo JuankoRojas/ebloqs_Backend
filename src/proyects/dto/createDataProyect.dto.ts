@@ -33,4 +33,20 @@ export class CreateDataProyectDto {
     @ApiProperty({ nullable: true })
     readonly builder_data: string;
 
+    @IsString()
+    @ApiProperty({ nullable: true })
+    readonly zone_malls: string;
+
+    @IsString()
+    @ApiProperty({ nullable: true })
+    readonly zone_markets: string;
+
+    @IsString()
+    @ApiProperty({ nullable: true })
+    readonly zone_parks: string;
+
+    @IsString()
+    @ApiProperty({ nullable: true })
+    readonly zone_subway: string;
+
 }

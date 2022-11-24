@@ -15,6 +15,9 @@ export class Proyects {
     country: string;
 
     @Column({ type: 'varchar', nullable: true })
+    city: string;
+
+    @Column({ type: 'varchar', nullable: true })
     type: string;
 
     @Column({ type: 'varchar', nullable: false })
@@ -52,6 +55,12 @@ export class Proyects {
 
     @Column({ type: 'integer', nullable: true, default: 1 })
     status: number;
+
+    @Column({ type: 'varchar', nullable: false })
+    address_id: string;
+
+    @Column({ type: 'boolean', nullable: false })
+    featured: boolean;
 
     @CreateDateColumn({
         type: 'timestamp',

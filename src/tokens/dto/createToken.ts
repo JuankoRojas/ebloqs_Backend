@@ -25,4 +25,8 @@ export class CreateTokenDto {
     @IsString()
     @ApiProperty()
     readonly presale: string;
+
+    @IsBoolean()
+    @ApiProperty()
+    readonly presale_status: boolean;
 }

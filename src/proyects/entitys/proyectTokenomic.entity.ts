@@ -7,42 +7,30 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ProyectsData {
+export class ProyectsTokenomic {
     @PrimaryColumn()
     id_proyect: string;
 
     @Column({ type: 'varchar', nullable: true })
-    surface_building: string;
+    annual_rental: string;
 
     @Column({ type: 'varchar', nullable: true })
-    number_departaments: string;
+    construction_interest: string;
 
     @Column({ type: 'varchar', nullable: false })
-    number_amenities: string;
+    annual_expenditure: string;
 
     @Column({ type: 'varchar', nullable: false })
-    escrow: string;
+    net_leasing: string;
 
     @Column({ type: 'varchar', nullable: false })
-    approved_plans: string;
+    annual_net_profit: string;
 
     @Column({ type: 'varchar', nullable: true })
-    construction_license: string;
+    plusvalia: string;
 
     @Column({ type: 'varchar', nullable: true })
-    builder_data: string;
-
-    @Column({ type: 'text', nullable: true })
-    zone_malls: string;
-
-    @Column({ type: 'text', nullable: true })
-    zone_markets: string;
-
-    @Column({ type: 'text', nullable: true })
-    zone_parks: string;
-    
-    @Column({ type: 'text', nullable: true })
-    zone_subway: string;
+    net: string;
 
     @CreateDateColumn({
         type: 'timestamp',

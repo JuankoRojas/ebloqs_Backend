@@ -20,6 +20,7 @@ export class TokensService {
                 private_round: createToken.private_round,
                 ico_cost: createToken.ico_cost,
                 presale: createToken.presale,
+                presale_status: createToken.presale_status
             };
             const newToken = await this.tokensRepository.save(token);
             return newToken;

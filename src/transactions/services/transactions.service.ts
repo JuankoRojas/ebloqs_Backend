@@ -15,16 +15,16 @@ export class TransactionsService {
             if (createTransactionDto.type === 0) { type = "bank"; }
             if (createTransactionDto.type === 1) { type = "card"; }
 
-            if ( createTransactionDto.type === 1){
+            if (createTransactionDto.type === 1) {
                 const transaction = <Transactions>{
                     id: createTransactionDto.id,
                     customer: createTransactionDto.customer,
                     amount: createTransactionDto.amount,
                     customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
                     customer_id_ref: createTransactionDto.customer_id_ref,
-                    payment_number : createTransactionDto.payment_number,
+                    payment_number: createTransactionDto.payment_number,
                     type: type,
-                    status : createTransactionDto.status
+                    status: createTransactionDto.status
                 }
                 const newTransaction = await this.transactionsRepo.save(transaction);
                 return newTransaction;
@@ -36,13 +36,13 @@ export class TransactionsService {
                 amount: createTransactionDto.amount,
                 customer_name: createTransactionDto.customer_name.toLocaleLowerCase(),
                 customer_id_ref: createTransactionDto.customer_id_ref,
-                payment_number : createTransactionDto.payment_number,
+                payment_number: createTransactionDto.payment_number,
                 type: type
             }
             const newTransaction = await this.transactionsRepo.save(transaction);
             return newTransaction;
-            
-           
+
+
 
         } catch (e: any) {
             console.log(e.message);
@@ -102,8 +102,8 @@ export class TransactionsService {
         try {
             var balanceBank: number = 0;
             var balanceCard: number = 0;
-            const dataBank = await this.transactionsRepo.findBy({ type: "bank" });
-            const dataCard = await this.transactionsRepo.findBy({ type: "card" });
+            const dataBank = await this.transactionsRepo.findBy({ type: "bank", status: 1 });
+            const dataCard = await this.transactionsRepo.findBy({ type: "card", status: 1 });
             for (const data of dataBank) {
                 const convertion = parseInt(data.amount)
                 balanceBank += convertion;
