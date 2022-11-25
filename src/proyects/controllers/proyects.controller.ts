@@ -73,4 +73,10 @@ export class ProyectsController {
     validatePoyectFeatures() {
         return this.proyectService.validateFeaturedTime();
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/featured/lot')
+    validateFeaturedLot() {
+        return this.proyectService.validateFeaturedLot();
+    }
 }

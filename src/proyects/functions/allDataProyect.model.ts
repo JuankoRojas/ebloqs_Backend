@@ -1,5 +1,4 @@
-export function allDataProyect(dates: any) {
-    const data = dates[0]
+export function allDataProyect(data: any) {
     let proyect = {
         id: data?.id || "",
         country: data?.country || "",
@@ -27,9 +26,9 @@ export function allDataProyect(dates: any) {
         builder_data: data?.builder_data || "",
         zone_malls: data?.zone_malls || "",
         zone_markets: data?.zone_markets || "",
-        zone_parks: data?.zone_par || "",
-        zone_subway: data?.zone_sub || "",
-        annual_rental: data?.annual || "",
+        zone_parks: data?.zone_parks || "",
+        zone_subway: data?.zone_subway || "",
+        annual_rental: data?.annual_rental || "",
         construction_interest: data?.construction_interest || "",
         annual_expenditure: data?.annual_expenditure || "",
         net_leasing: data?.net_leasing || "",

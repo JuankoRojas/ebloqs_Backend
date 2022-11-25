@@ -97,7 +97,7 @@ export class ProyectsService {
                     id: idProyect,
                     status: true
                 }
-                const tokenConfig = { secret: process.env.TOKEN_FEATURED, expiresIn: '60s' }
+                const tokenConfig = { secret: process.env.TOKEN_FEATURED, expiresIn: '15d' }
                 let token = await this.jwtService.signAsync(payload, tokenConfig)
                 console.log(token)
                 const proyectFeatured = <unknown>{
@@ -122,9 +122,9 @@ export class ProyectsService {
             const allProyects = await this.proyectRepo.find()
             let fullProyects = []
             for (var proyect of allProyects) {
-                const dataProyect = await this.dataProyectRepo.findBy({ id_proyect: proyect.id })
-                const tokenomicProyect = await this.tokenomicProyectRepo.findBy({ id_proyect: proyect.id })
-                let temp = [proyect, ...dataProyect, ...tokenomicProyect]
+                const dataProyect = await this.dataProyectRepo.findOneBy({ id_proyect: proyect.id })
+                const tokenomicProyect = await this.tokenomicProyectRepo.findOneBy({ id_proyect: proyect.id })
+                let temp = { ...proyect, ...dataProyect, ...tokenomicProyect }
                 let proyectFullData = allDataProyect(temp)
                 fullProyects.push(proyectFullData)
             }
@@ -155,19 +155,30 @@ export class ProyectsService {
             for (var city of allCitys) {
                 citys.push(city.city)
             }
-            var arrayCitys = citys.filter((item, index) => {
+            var arrayCitys = citys.sort().filter((item, index) => {
                 return citys.indexOf(item) === index;
             })
 
             for (const city of arrayCitys) {
                 const dataByCity = await this.proyectRepo.find({ where: { city: city } })
-                arrayDataByCity.push(dataByCity)
+                for (const data of dataByCity) {
+                    const dataProyect = await this.dataProyectRepo.findOneBy({ id_proyect: data.id })
+                    const tokenomicProyect = await this.tokenomicProyectRepo.findOneBy({ id_proyect: data.id })
+                    let temp = { ...data, ...dataProyect, ...tokenomicProyect }
+                    let proyectFullData = allDataProyect(temp)
+                    arrayDataByCity.push(proyectFullData)
+                }
             }
 
-            for (const data of arrayDataByCity) {
-                console.log(data)
-            }
-            return { proyects: "listCitys" }
+            var listProyects = arrayCitys.map((c) => {
+                let data = {
+                    city: c,
+                    proyects: arrayDataByCity.filter((r) => r.city.toLowerCase() === c.toLowerCase())
+                }
+                return data
+            })
+            
+            return { proyects: listProyects }
         } catch (e: any) {
             console.log(e)
             throw new HttpException(e.message, 500)
@@ -180,7 +191,7 @@ export class ProyectsService {
             const proyectsFeatured = await this.featuredProyectRepo.find()
             for (const proyect of proyectsFeatured) {
                 console.log(proyect)
-                const tokenConfig = { secret: process.env.TOKEN_FEATURED, expiresIn: '60s' }
+                const tokenConfig = { secret: process.env.TOKEN_FEATURED, expiresIn: '15d' }
                 try {
                     await this.jwtService.verifyAsync(proyect.token, tokenConfig)
                 } catch (e) {
@@ -190,6 +201,17 @@ export class ProyectsService {
             }
 
             return { message: "Proyect featured reviewed" }
+        } catch (e) {
+            console.log(e)
+            throw new HttpException(e.message, 500)
+        }
+    }
+
+    async validateFeaturedLot() {
+        try {
+            const validateFeatured = await this.featuredProyectRepo.findAndCount();
+            if (validateFeatured[1] >= 5) return { ok: false, lot: validateFeatured[1], message: `the lot of featured is ${validateFeatured[1]}` }
+            if (validateFeatured[1] < 5) return { ok: true, lot: validateFeatured[1], message: `the lot of featured is ${validateFeatured[1]}` }
         } catch (e) {
             console.log(e)
             throw new HttpException(e.message, 500)
